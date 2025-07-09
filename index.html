@@ -1,119 +1,151 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Veltrix — AI-платформа</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            text-align: center;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #0e1113;
-            padding: 0 40px;
-            border-bottom: 1px solid #222;
-            height: 70px;
-        }
-        .nav-left {
-            display: flex;
-            align-items: center;
-        }
-        .nav-left img {
-            height: 36px;
-            margin-right: 12px;
-        }
-        .nav-left a {
-            text-decoration: none;
-            color: white;
-            font-size: 20px;
-            font-weight: 600;
-        }
-        .nav-center, .nav-right {
-            display: flex;
-            align-items: center;
-        }
-        .nav-center a, .nav-right a {
-            color: white;
-            text-decoration: none;
-            margin: 0 16px;
-            font-weight: bold;
-            position: relative;
-        }
-        .nav-center a:not(:last-child)::after {
-            content: "";
-            position: absolute;
-            height: 16px;
-            width: 1px;
-            background: #333;
-            right: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .nav-right img {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-        }
-        .main-content {
-            padding: 80px 20px 60px;
-        }
-        .main-content h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        .main-content p {
-            max-width: 600px;
-            margin: 10px auto;
-            font-size: 18px;
-            color: #ccc;
-        }
-        .main-content .cta-button {
-            margin-top: 30px;
-            background-color: #006aff;
-            color: white;
-            padding: 14px 28px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .footer {
-            margin-top: 80px;
-            font-size: 14px;
-            color: #777;
-        }
-    </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Veltrix</title>
+<style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background-color: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #0c0f11;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 40px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo img {
+      height: 28px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    nav a:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 20px;
+      background-color: #3d3d3d;
+    }
+
+    .profile {
+      margin-left: 30px;
+    }
+
+    .profile img {
+      height: 22px;
+      filter: brightness(1000%);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 20px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 13px;
+      color: #777;
+      margin-top: auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="nav-left">
-            <a href="#"><img src="logo2.png" alt="Logo">Veltrix</a>
-        </div>
-        <div class="nav-center">
-            <a href="#">Главная</a>
-            <a href="#">Подписка</a>
-            <a href="#">Контакты</a>
-        </div>
-        <div class="nav-right">
-            <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="User"></a>
-        </div>
-    </div>
-    <div class="main-content">
-        <h1>Veltrix — AI-платформа интеллектуальных решений</h1>
-        <p>Мы создаём умные Telegram-инструменты на базе искусственного интеллекта.</p>
-        <p>Один из них — бот с аналитикой спортивных событий.<br>Получай точные прогнозы каждый день в Telegram.</p>
-        <button class="cta-button">Перейти в бота</button>
-    </div>
-    <div class="footer">
-        © Veltrix — AI Platform, not a betting company
-    </div>
+<header>
+<a class="logo" href="#">
+<img alt="Veltrix Logo" src="logo2.png"/>
+<span style="font-weight: 600;">Veltrix</span>
+</a>
+<div style="display: flex; align-items: center;">
+<nav>
+<a href="#">Главная</a>
+<a href="#">Подписка</a>
+<a href="#">Контакты</a>
+</nav>
+<div class="profile">
+<img alt="Профиль" src="https://img.icons8.com/ios-glyphs/30/ffffff/user--v1.png"/>
+</div>
+</div>
+</header>
+<main>
+<h1>Veltrix — AI-платформа интеллектуальных решений</h1>
+<p>Мы создаём умные Telegram-инструменты на базе искусственного интеллекта.</p>
+<p>Один из них — бот с аналитикой спортивных событий.</p>
+<p>Получай точные прогнозы каждый день в Telegram.</p>
+<a class="btn" href="#">Перейти в бота</a>
+</main>
+<footer>
+    © Veltrix — AI Platform, not a betting company
+  </footer>
 </body>
 </html>
+
