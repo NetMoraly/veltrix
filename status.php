@@ -8,7 +8,7 @@ $amount = $_POST['m_amount'];
 $order_id = $_POST['m_orderid'];
 $sign = $_POST['m_sign'];
 
-$secret = 'ВАШ_СЕКРЕТНЫЙ_КЛЮЧ';
+$secret = '14773045';
 $hash = strtoupper(hash('sha256', implode(":", [
     $_POST['m_operation_id'],
     $_POST['m_operation_ps'],
