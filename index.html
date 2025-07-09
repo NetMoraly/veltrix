@@ -5,82 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Veltrix</title>
   <style>
+    /* Сброс */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       background:#000; color:#fff;
       display:flex; flex-direction:column;
       min-height:100vh;
     }
-    .header-wrapper { background:#0c0f11; }
+
+    /* Обертка-фон для header */
+    .header-bg {
+      background:#0c0f11;
+      width:100%;
+    }
+    /* Сам header */
     header {
       max-width:1200px; margin:0 auto;
       display:flex; justify-content:space-between; align-items:center;
       padding:14px 20px; border-bottom:1px solid #1e1e1e;
     }
-    .header-left, .header-right { display:flex; align-items:center; }
-    .header-right { flex:1; justify-content:flex-end; gap:20px; }
 
-    .logo-container {
+    /* Левый блок: лого + текст */
+    .header-left {
       display:flex; align-items:center; gap:8px;
-      text-decoration:none; color:#fff;
     }
-    .logo-container img {
+    .header-left img {
       height:24px;
     }
-    .logo-container .logo-text {
-      font-size:24px; font-weight:600;
+    .header-left .logo-text {
+      font-size:24px; font-weight:600; line-height:1;
     }
 
-    .nav {
-      display:flex; align-items:center; gap:20px;
+    /* Правый блок: меню + профиль */
+    .header-right {
+      display:flex; align-items:center; gap:16px;
     }
-    .nav a {
-      color:#fff; text-decoration:none; font-weight:600; position:relative;
-      font-size:16px;
+    .header-right nav {
+      display:flex; align-items:center; gap:16px;
     }
-    .nav a:not(:last-child)::after {
-      content:''; position:absolute; right:-10px; top:50%;
-      transform:translateY(-50%);
+    .header-right nav a {
+      color:#fff; text-decoration:none; font-size:16px; font-weight:600;
+      position:relative;
+    }
+    .header-right nav a:not(:last-child)::after {
+      content:''; position:absolute;
+      right:-8px; top:50%; transform:translateY(-50%);
       width:1px; height:20px; background:#333;
     }
-
     .profile-icon img {
-      height:22px; width:22px;
+      height:20px; width:20px;
       filter:brightness(1000%);
     }
 
+    /* Основное содержимое */
     main {
       flex:1; display:flex; flex-direction:column;
       align-items:center; justify-content:center;
-      padding:60px 20px; text-align:center;
+      text-align:center; padding:60px 20px;
     }
-    h1 { font-size:32px; font-weight:700; margin-bottom:20px; }
-    p { font-size:18px; line-height:1.6; margin:8px 0; }
+    main h1 {
+      font-size:32px; font-weight:700; margin-bottom:20px;
+    }
+    main p {
+      font-size:18px; line-height:1.6; margin:8px 0;
+    }
     .btn {
-      margin-top:30px; background:#006aff; color:#fff;
+      margin-top:30px;
+      background:#006aff; color:#fff;
       padding:14px 32px; border:none; border-radius:8px;
       font-size:16px; font-weight:600; text-decoration:none;
       display:inline-block;
     }
 
+    /* Футер */
     footer {
-      margin-top:auto; padding:20px 0; text-align:center;
-      font-size:14px; color:#777;
+      margin-top:auto; padding:20px 0;
+      text-align:center; font-size:14px; color:#777;
     }
   </style>
 </head>
 <body>
-  <div class="header-wrapper">
+
+  <div class="header-bg">
     <header>
       <div class="header-left">
-        <a href="#" class="logo-container">
-          <img src="logo2.png" alt="Veltrix Logo">
-          <span class="logo-text">Veltrix</span>
-        </a>
+        <img src="logo2.png" alt="Veltrix Logo">
+        <span class="logo-text">Veltrix</span>
       </div>
       <div class="header-right">
-        <nav class="nav">
+        <nav>
           <a href="#">Главная</a>
           <a href="#">Подписка</a>
           <a href="#">Контакты</a>
@@ -101,6 +115,6 @@
   </main>
 
   <footer>© Veltrix — AI Platform, not a betting company</footer>
+
 </body>
 </html>
-
