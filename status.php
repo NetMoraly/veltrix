@@ -30,5 +30,5 @@ if ($sign !== $hash || $_POST['m_status'] !== 'success') {
 
 file_put_contents("success.log", json_encode($_POST));
 
-echo "OK" . $order_id;
+echo "OK" . $_POST['m_orderid'];
 ?>
