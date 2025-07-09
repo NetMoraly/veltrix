@@ -5,39 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Veltrix</title>
   <style>
-    /* Сброс */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       background:#000; color:#fff;
-      display:flex; flex-direction:column;
-      min-height:100vh;
+      display:flex; flex-direction:column; min-height:100vh;
     }
-
-    /* Обертка-фон для header */
     .header-bg {
-      background:#0c0f11;
-      width:100%;
+      background:#0c0f11; width:100%; border-bottom:1px solid #1e1e1e;
     }
-    /* Сам header */
     header {
-      max-width:1200px; margin:0 auto;
       display:flex; justify-content:space-between; align-items:center;
-      padding:14px 20px; border-bottom:1px solid #1e1e1e;
+      padding:6px 20px;    /* ещё чуть меньше вертикальных отступов */
+      overflow:visible;
     }
-
-    /* Левый блок: лого + текст */
     .header-left {
-      display:flex; align-items:center; gap:8px;
+      display:flex; align-items:center; /* текст вплотную к логотипу */
     }
     .header-left img {
-      height:24px;
+      height:108px; width:auto;
     }
     .header-left .logo-text {
-      font-size:24px; font-weight:600; line-height:1;
+       margin-left: 4px; /* или 2px, или даже 0, по вкусу */
+  font-size: 28px;
+  font-weight: 600;
     }
-
-    /* Правый блок: меню + профиль */
     .header-right {
       display:flex; align-items:center; gap:16px;
     }
@@ -45,43 +37,31 @@
       display:flex; align-items:center; gap:16px;
     }
     .header-right nav a {
-      color:#fff; text-decoration:none; font-size:16px; font-weight:600;
-      position:relative;
+      color:#fff; text-decoration:none; font-size:16px; font-weight:600; position:relative;
     }
     .header-right nav a:not(:last-child)::after {
-      content:''; position:absolute;
-      right:-8px; top:50%; transform:translateY(-50%);
+      content:''; position:absolute; right:-8px; top:50%; transform:translateY(-50%);
       width:1px; height:20px; background:#333;
     }
     .profile-icon img {
-      height:20px; width:20px;
-      filter:brightness(1000%);
+      height:20px; width:20px; filter:brightness(1000%);
     }
-
-    /* Основное содержимое */
     main {
       flex:1; display:flex; flex-direction:column;
       align-items:center; justify-content:center;
       text-align:center; padding:60px 20px;
     }
-    main h1 {
-      font-size:32px; font-weight:700; margin-bottom:20px;
-    }
-    main p {
-      font-size:18px; line-height:1.6; margin:8px 0;
-    }
+    main h1 { font-size:32px; font-weight:700; margin-bottom:20px; }
+    main p { font-size:18px; line-height:1.6; margin:8px 0; max-width:600px; }
     .btn {
-      margin-top:30px;
-      background:#006aff; color:#fff;
+      margin-top:30px; background:#006aff; color:#fff;
       padding:14px 32px; border:none; border-radius:8px;
       font-size:16px; font-weight:600; text-decoration:none;
       display:inline-block;
     }
-
-    /* Футер */
     footer {
-      margin-top:auto; padding:20px 0;
-      text-align:center; font-size:14px; color:#777;
+      margin-top:auto; padding:20px 0; text-align:center;
+      font-size:14px; color:#777;
     }
   </style>
 </head>
@@ -113,6 +93,12 @@
     <p>Получай точные прогнозы каждый день в Telegram.</p>
     <a href="#" class="btn">Перейти в бота</a>
   </main>
+
+  <footer>© Veltrix — AI Platform, not a betting company</footer>
+
+</body>
+</html>
+
 
   <footer>© Veltrix — AI Platform, not a betting company</footer>
 
