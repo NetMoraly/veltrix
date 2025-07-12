@@ -35,7 +35,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-lg z-50">
+    <header className="w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-lg">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <BrandLogo />
 
@@ -88,5 +88,4 @@ export default function Header() {
     </header>
   );
 }
-
 
