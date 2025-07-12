@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import Header from "../components/Header";
 import Toast from "../components/Toast";
+import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import Footer from "../components/Footer";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -34,10 +34,7 @@ export default function LoginPage() {
     }
     setLoading(true);
 
-    // Динамический импорт только на клиенте
     const { createClient } = await import("@supabase/supabase-js");
-
-    // Тут переменные всегда будут доступны на клиенте!
     const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -48,7 +45,6 @@ export default function LoginPage() {
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
@@ -67,7 +63,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px]">
       <Header />
 
       <div className="relative flex-grow flex items-center justify-center px-4 overflow-hidden">
@@ -116,7 +112,7 @@ export default function LoginPage() {
 
           <div className="mt-4 text-sm text-white/60 text-center space-y-2">
             <p>
-              Нет аккаунта?{" "}
+              Нет аккаунта?{' '}
               <Link href="/register" className="text-white hover:underline">
                 Зарегистрироваться
               </Link>
@@ -147,12 +143,15 @@ export default function LoginPage() {
         </div>
       </div>
 
+      <Footer />
+
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage("")} />
       )}
     </div>
   );
 }
+
 
 
 
