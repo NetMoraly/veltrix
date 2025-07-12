@@ -6,7 +6,7 @@ import Toast from "../components/Toast";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-
+import Footer from "../components/Footer";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
