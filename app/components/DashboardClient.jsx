@@ -17,23 +17,24 @@ import {
 
 export default function DashboardClient() {
   const router = useRouter();
-  const [supabase, setSupabase] = useState(null);
+  const supabase = createClientComponentClient();
+
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
 
   useEffect(() => {
-    // Создаем клиент только на клиенте
-    setSupabase(createClientComponentClient());
-  }, []);
-
-  useEffect(() => {
-    if (!supabase) return;
     const checkAuth = async () => {
       const {
         data: { session },
+        error,
       } = await supabase.auth.getSession();
-      if (!session) router.push('/login');
+
+      if (!session) {
+        console.warn("Нет сессии, редирект на логин", error);
+        router.push('/login');
+      }
     };
+
     checkAuth();
   }, [router, supabase]);
 
@@ -182,3 +183,4 @@ export default function DashboardClient() {
     </div>
   );
 }
+
