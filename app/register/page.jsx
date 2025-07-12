@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Link from 'next/link';
 import Script from 'next/script';
 import Toast from '../components/Toast';
+import Footer from "../components/Footer";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
