@@ -25,7 +25,6 @@ export default function RegisterPage() {
 
   useEffect(() => {
     window.onTelegramAuth = function (user) {
-      console.log('Telegram user:', user);
       localStorage.setItem('token', JSON.stringify(user));
       router.push('/dashboard');
     };
@@ -79,14 +78,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
       <Header />
 
-      <main className="flex items-center justify-center px-4 pt-20 pb-10">
-        <div className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl shadow-xl p-8 text-white">
-          <h2 className="text-2xl font-bold text-center mb-6">Регистрация</h2>
+      <div className="relative flex-grow flex items-center justify-center px-4 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
+          <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
+        </div>
 
-          <form onSubmit={handleRegister} className="space-y-4">
+        <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold text-white text-center mb-6">Регистрация</h2>
+
+          <form className="space-y-4" onSubmit={handleRegister}>
             <input
               type="email"
               placeholder="Email"
@@ -168,11 +172,11 @@ export default function RegisterPage() {
               data-request-access="write"
               data-onauth="onTelegramAuth(user)"
               strategy="afterInteractive"
-              data-auth-url="http://localhost:3000/api/auth/telegram"
+              data-auth-url={`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`}
             />
           </div>
         </div>
-      </main>
+      </div>
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage('')} />
@@ -180,5 +184,4 @@ export default function RegisterPage() {
     </div>
   );
 }
-
 
