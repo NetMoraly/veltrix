@@ -179,7 +179,7 @@ export default function RegisterPage() {
                   </div>
         </div>
 
-        <div className="w-full mt-12">
+        <div className="w-full mt-16">
           <Footer />
         </div>
 
