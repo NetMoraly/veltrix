@@ -78,17 +78,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
+    <div className="min-h-screen bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px] px-4">
       <Header />
 
-      <div className="relative flex-grow flex items-center justify-center px-4 overflow-hidden">
+      <div className="relative flex items-center justify-center min-h-[calc(100vh-96px)]">
         <div className="absolute inset-0 z-0">
           <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
           <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
         </div>
 
-        <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold text-white text-center mb-6">Регистрация</h2>
+        <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl text-white">
+          <h2 className="text-2xl font-bold text-center mb-6">Регистрация</h2>
 
           <form className="space-y-4" onSubmit={handleRegister}>
             <input
