@@ -65,7 +65,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px]">
       <Header />
-
+  <main className="mt-20">
       <div className="relative flex-grow flex items-center justify-center px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
@@ -142,7 +142,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-
+</main>
       <Footer />
 
       {toastMessage && (
