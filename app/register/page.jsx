@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import Link from 'next/link';
 import Script from 'next/script';
 import Toast from '../components/Toast';
-import Footer from "../components/Footer";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -79,10 +79,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px] px-4">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px] px-4">
       <Header />
 
-      <div className="relative flex items-center justify-center min-h-[calc(100vh-96px)]">
+      <div className="relative flex-grow flex items-center justify-center">
         <div className="absolute inset-0 z-0">
           <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
           <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
@@ -178,6 +178,8 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+
+      <Footer />
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage('')} />
