@@ -10,16 +10,11 @@ export default function Header() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
-    }
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
 
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     };
@@ -35,11 +30,11 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-lg">
-      <div className="flex items-center justify-between max-w-7xl mx-auto">
+    <header className="w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         <BrandLogo />
 
-        <nav className="flex gap-8 text-base items-center text-white relative">
+        <nav className="flex items-center gap-6 text-white">
           <Link href="/#faq" className="hover:text-[#b44cff] transition">FAQ</Link>
           <Link href="/subscribe" className="hover:text-[#b44cff] transition">Подписка</Link>
           <Link href="/contacts" className="hover:text-[#b44cff] transition">Контакты</Link>
@@ -48,43 +43,25 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((prev) => !prev)}
-                className="ml-4 px-6 py-2 rounded-2xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow-md hover:scale-105 transition-all duration-150"
+                className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition"
               >
                 Личный кабинет
               </button>
-
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gradient-to-br from-[#301250] to-[#44205f] text-white rounded-xl shadow-xl py-2 z-[9999] animate-fadeInDropdown backdrop-blur-lg border border-white/10">
-                  <Link href="/dashboard" className="block px-4 py-2 hover:bg-white/10 transition" onClick={() => setDropdownOpen(false)}>Профиль</Link>
-                  <Link href="/settings" className="block px-4 py-2 hover:bg-white/10 transition" onClick={() => setDropdownOpen(false)}>Настройки профиля</Link>
+                <div className="absolute right-0 mt-2 w-48 bg-[#2a0145]/90 text-white rounded-xl shadow-xl py-2 z-50 backdrop-blur border border-white/10">
+                  <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 hover:bg-white/10 transition">Профиль</Link>
+                  <Link href="/settings" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 hover:bg-white/10 transition">Настройки</Link>
                   <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-white/10 transition">Выйти</button>
                 </div>
               )}
             </div>
           ) : (
-            <Link href="/login" className="ml-4 px-6 py-2 rounded-2xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow-md hover:scale-105 transition-all duration-150">
+            <Link href="/login" className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition">
               Войти
             </Link>
           )}
         </nav>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInDropdown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fadeInDropdown {
-          animation: fadeInDropdown 0.2s ease-out forwards;
-        }
-      `}</style>
     </header>
   );
 }
