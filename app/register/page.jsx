@@ -82,7 +82,7 @@ export default function RegisterPage() {
     <>
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px] px-4">
-      <div className="relative flex-grow flex items-center justify-center px-4 py-12">
+      <div className="relative flex-grow flex items-center justify-center px-4 py-24">
           <div className="absolute inset-0 z-0">
             <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
             <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
