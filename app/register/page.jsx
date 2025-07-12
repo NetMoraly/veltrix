@@ -176,16 +176,17 @@ export default function RegisterPage() {
                 data-auth-url={`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`}
               />
             </div>
-          </div>
-            </div>
+                  </div>
+        </div>
 
-      <div className="w-full mt-12">
-        <Footer />
-      </div>
+        <div className="w-full mt-12">
+          <Footer />
+        </div>
 
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
-      )}
+        {toastMessage && (
+          <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+        )}
+      </div> {/* ✅ Закрываем основной контейнер */}
     </>
   );
 }
