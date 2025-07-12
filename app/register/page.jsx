@@ -179,7 +179,12 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <Footer />
+    <div className="w-full px-4">
+  <div className="max-w-7xl mx-auto">
+    <Footer />
+  </div>
+</div>
+
 
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage('')} />
