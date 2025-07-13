@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import BrandLogo from '../components/BrandLogo';
-import Footer from '../components/Footer'; 
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 
 export default function ContactsPage() {
   return (
     <>
       <Header />
+
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
         <main className="flex-grow flex flex-col items-center justify-center gap-10 px-6 py-16">
           <h1 className="text-4xl font-bold text-white">Контакты</h1>
