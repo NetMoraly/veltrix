@@ -7,3 +7,7 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+export const config = {
+  matcher: ['/dashboard', '/settings', '/subscribe'], // добавь сюда нужные приватные страницы
+}
