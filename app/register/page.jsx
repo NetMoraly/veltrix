@@ -35,10 +35,11 @@ export default function RegisterPage() {
   
 const supabase = createClientComponentClient();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
+  try {
     if (password !== repeatPassword) {
       setToastMessage('Пароли не совпадают');
       setLoading(false);
@@ -51,6 +52,12 @@ const supabase = createClientComponentClient();
       body: JSON.stringify({ email }),
     });
 
+    if (!checkResponse.ok) {
+      setToastMessage('Ошибка проверки email. Попробуйте позже.');
+      setLoading(false);
+      return;
+    }
+
     const { exists } = await checkResponse.json();
 
     if (exists) {
@@ -58,7 +65,8 @@ const supabase = createClientComponentClient();
       setLoading(false);
       return;
     }
-    
+
+    // signup
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -73,10 +81,13 @@ const supabase = createClientComponentClient();
       setToastMessage('📩 Подтвердите регистрацию через email');
     }
 
+  } catch (err) {
+    setToastMessage('Непредвиденная ошибка: ' + err.message);
+  } finally {
     setLoading(false);
-  };
-
-  return (
+  }
+};
+  return ( 
     <>
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px]">
