@@ -3,13 +3,16 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import Toast from '../components/Toast';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChangePassword = async (e) => {
+  const supabase = createClientComponentClient();
+
+ const handleChangePassword = async (e) => {
     e.preventDefault();
     if (!password) {
       setToastMessage('Введите новый пароль');
@@ -18,20 +21,7 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
 
-    let supabase;
-    if (typeof window !== "undefined") {
-      const { createClient } = await import('@supabase/supabase-js');
-      supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      );
-    } else {
-      setToastMessage("Supabase доступен только на клиенте");
-      setLoading(false);
-      return;
-    }
-
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabase.auth.updateUser({ password }); // <-- используешь этого клиента
     setLoading(false);
 
     if (error) {
@@ -39,7 +29,7 @@ export default function ResetPasswordPage() {
     } else {
       setToastMessage('✅ Пароль успешно изменен');
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white">

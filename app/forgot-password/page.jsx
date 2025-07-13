@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import Toast from '../components/Toast';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [toastMessage, setToastMessage] = useState('');
+  const supabase = createClientComponentClient();
 
   const handleReset = async (e) => {
     e.preventDefault();
@@ -15,24 +17,11 @@ export default function ForgotPassword() {
       return;
     }
 
-    let supabase;
-    if (typeof window !== "undefined") {
-      // ⚡️ Импорт только на клиенте!
-      const { createClient } = await import('@supabase/supabase-js');
-      supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      );
-    } else {
-      setToastMessage("Supabase доступен только на клиенте");
-      return;
-    }
+   const redirectUrl = `${window.location.origin}/reset-password`;
 
-    const redirectUrl = `${window.location.origin}/reset-password`;
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: redirectUrl,
+});
 
     if (error) {
       setToastMessage(error.message);

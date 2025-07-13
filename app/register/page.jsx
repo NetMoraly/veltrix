@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import Link from 'next/link';
 import Script from 'next/script';
 import Toast from '../components/Toast';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -30,6 +32,8 @@ export default function RegisterPage() {
       router.push('/dashboard');
     };
   }, [router]);
+  
+const supabase = createClientComponentClient();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -54,13 +58,7 @@ export default function RegisterPage() {
       setLoading(false);
       return;
     }
-
-    const { createClient } = require('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
-
+    
     const { error } = await supabase.auth.signUp({
       email,
       password,
