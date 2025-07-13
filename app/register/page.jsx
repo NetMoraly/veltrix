@@ -179,7 +179,7 @@ export default function RegisterPage() {
                   </div>
         </div>
 
-        <div className="mt-24">
+        <div className="mt-48">
   <Footer />
 </div>
 
