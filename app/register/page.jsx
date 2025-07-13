@@ -179,9 +179,9 @@ export default function RegisterPage() {
                   </div>
         </div>
 
-     <div className="relative w-full flex-grow flex items-center justify-center">
+  
   <Footer />
-</div>
+
 
 
         {toastMessage && (
