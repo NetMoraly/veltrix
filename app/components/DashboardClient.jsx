@@ -21,9 +21,10 @@ export default function DashboardClient() {
 
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndSubscription = async () => {
       const {
         data: { session },
         error,
@@ -32,10 +33,28 @@ export default function DashboardClient() {
       if (!session) {
         console.warn("Нет сессии, редирект на логин", error);
         router.push('/login');
+        return;
+      }
+
+      const { data: user } = await supabase
+        .from('Users')
+        .select('subscription_active, subscription_expires_at')
+        .eq('id', session.user.id)
+        .single();
+
+      if (user?.subscription_active && user?.subscription_expires_at) {
+        setHasActiveSubscription(true);
+
+        const now = new Date();
+        const expires = new Date(user.subscription_expires_at);
+        const diffMs = expires - now;
+        const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+
+        setDaysLeft(diffDays);
       }
     };
 
-    checkAuth();
+    checkAuthAndSubscription();
   }, [router, supabase]);
 
   const stats = [
@@ -91,26 +110,43 @@ export default function DashboardClient() {
         </div>
 
         <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-4">Прогнозы на сегодня</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {forecasts.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white/5 p-4 rounded-xl backdrop-blur-lg shadow-md"
-              >
-                <p className="text-lg font-semibold">{item.match}</p>
-                <p className="text-white/70">Время: {item.time}</p>
-                <p className="mt-2 font-medium text-green-400">
-                  Прогноз: {item.prediction}
-                </p>
-                <button
-                  onClick={() => setSelectedForecast(item)}
-                  className="mt-4 inline-block px-4 py-2 rounded-xl bg-gradient-to-r from-[#6e45e2] to-[#88d3ce] text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:brightness-110 cursor-pointer"
+          <h2 className="text-2xl font-bold mb-4">Аналитика на сегодня</h2>
+          <div className="relative">
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 transition-all ${!hasActiveSubscription ? 'blur-sm pointer-events-none select-none' : ''}`}>
+              {forecasts.map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-white/5 p-4 rounded-xl backdrop-blur-lg shadow-md"
                 >
-                  Подробнее
+                  <p className="text-lg font-semibold">{item.match}</p>
+                  <p className="text-white/70">Время: {item.time}</p>
+                  <p className="mt-2 font-medium text-green-400">
+                    Оценка: {item.prediction}
+                  </p>
+                  <button
+                    onClick={() => hasActiveSubscription && setSelectedForecast(item)}
+                    className={`mt-4 inline-block px-4 py-2 rounded-xl font-semibold text-sm transition ${
+                      hasActiveSubscription
+                        ? 'bg-gradient-to-r from-[#6e45e2] to-[#88d3ce] text-white hover:scale-105'
+                        : 'bg-gray-600 text-white cursor-not-allowed'
+                    }`}
+                    disabled={!hasActiveSubscription}
+                  >
+                    Подробнее
+                  </button>
+                </div>
+              ))}
+            </div>
+            {!hasActiveSubscription && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <button
+                  onClick={() => router.push('/subscribe')}
+                  className="bg-[#b517f5] hover:bg-[#9f11db] text-white px-6 py-3 rounded-xl font-bold text-lg backdrop-blur-xl shadow-xl"
+                >
+                  Получить доступ к аналитике
                 </button>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -183,4 +219,3 @@ export default function DashboardClient() {
     </div>
   );
 }
-

@@ -15,11 +15,11 @@ export default function SubscribePage() {
     setIsClient(true);
   }, []);
 
-  const handleSubscribeClick = () => {
+  const handleSubscribeClick = (link) => {
     const token = localStorage.getItem("token");
 
     if (token) {
-      window.location.href = "https://your-payment-link.ru";
+      window.location.href = link;
     } else {
       setShowModal(true);
       setTimeout(() => setAnimateModal(true), 10);
@@ -49,6 +49,7 @@ export default function SubscribePage() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+          {/* 🔹 Тариф 7 дней */}
           <div className="bg-white/5 backdrop-blur-xl p-6 rounded-xl shadow-xl flex flex-col items-center text-white">
             <p className="text-xl font-semibold mb-2">7 дней — 999₽</p>
             <p className="text-sm text-white/60 mb-4 text-center">
@@ -56,30 +57,27 @@ export default function SubscribePage() {
               открытых данных. Вся информация — прямо в вашем личном кабинете на сайте или в боте.
             </p>
             <button
-              onClick={handleSubscribeClick}
+              onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
               className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg font-semibold transition"
             >
               Перейти к оплате
             </button>
           </div>
 
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="bg-white/5 backdrop-blur-xl p-6 rounded-xl shadow-xl flex flex-col items-center text-white opacity-50 cursor-not-allowed"
+          {/* 🔹 Тариф 30 дней */}
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-xl shadow-xl flex flex-col items-center text-white">
+            <p className="text-xl font-semibold mb-2">30 дней — 3.499₽</p>
+            <p className="text-sm text-white/60 mb-4 text-center">
+              Долгосрочный доступ к аналитике. Идеально для постоянных
+              пользователей, которые хотят экономить на подписке.
+            </p>
+            <button
+              onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg font-semibold transition"
             >
-              <p className="text-xl font-semibold mb-2">В разработке</p>
-              <p className="text-sm text-white/60 mb-4 text-center">
-                Этот тариф скоро будет доступен
-              </p>
-              <button
-                disabled
-                className="bg-gray-500 text-white py-2 px-6 rounded-lg font-semibold cursor-not-allowed"
-              >
-                Недоступно
-              </button>
-            </div>
-          ))}
+              Перейти к оплате
+            </button>
+          </div>
         </div>
 
         <p className="text-white/50 mt-10 text-sm text-center max-w-md">
@@ -87,9 +85,18 @@ export default function SubscribePage() {
         </p>
       </div>
 
+      {/* 🔹 Блок платёжных иконок */}
+<div className="mt-8 flex flex-wrap gap-5 justify-center items-center opacity-80">
+  <img src="/mir.svg" alt="МИР" className="h-12" />
+  <img src="/mastercard.svg" alt="Mastercard" className="h-12" />
+  <img src="/visa.svg" alt="Visa" className="h-10" />
+  <img src="/crypto.svg" alt="Криптовалюта" className="h-10" />
+  <img src="/sbp.svg" alt="СБП" className="h-10" />
+</div>
+
       <Footer />
 
-      {/* 🔹 Модалка с анимацией */}
+      {/* 🔹 Модалка */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div
@@ -123,3 +130,4 @@ export default function SubscribePage() {
     </div>
   );
 }
+
