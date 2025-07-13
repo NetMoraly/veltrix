@@ -188,8 +188,3 @@ export default function RegisterPage() {
     </>
   );
 }
-
-      </div> {/* ✅ Закрываем основной контейнер */}
-    </>
-  );
-}
