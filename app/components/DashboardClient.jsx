@@ -30,6 +30,9 @@ export default function DashboardClient() {
         error,
       } = await supabase.auth.getSession();
 
+          console.log('session', session);
+    console.log('error', error);
+
       if (!session) {
         console.warn("Нет сессии, редирект на логин", error);
         router.push('/login');
