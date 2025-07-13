@@ -7,6 +7,8 @@ import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -24,6 +26,7 @@ export default function LoginPage() {
       };
     }
   }, [router]);
+const supabase = createClientComponentClient();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -34,17 +37,6 @@ export default function LoginPage() {
     }
     setLoading(true);
 
-    const { createClient } = await import("@supabase/supabase-js");
-    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      setLoading(false);
-      setToastMessage("Ошибка: supabase env-переменные не найдены");
-      return;
-    }
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
