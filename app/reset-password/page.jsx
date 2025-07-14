@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Toast from '../components/Toast';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Header from '../components/Header';
+import Toast from '../components/Toast';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -13,42 +13,25 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [checkingToken, setCheckingToken] = useState(true);
   const [hasSession, setHasSession] = useState(false);
 
   const router = useRouter();
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const url = new URL(window.location.href);
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      console.log('[DEBUG] session:', data.session);
+      if (data.session) {
+        setHasSession(true);
+      } else {
+        setToastMessage('Ссылка устарела или недействительна');
+      }
+      setCheckingToken(false);
+    };
 
-    // Сначала читаем из query (?token=...)
-    let token = url.searchParams.get('token');
-    let type = url.searchParams.get('type');
-
-    // Если пусто — читаем из hash (#access_token=...)
-    if (!token || !type) {
-      const hashParams = new URLSearchParams(window.location.hash.slice(1));
-      token = hashParams.get('access_token');
-      type = hashParams.get('type') || 'recovery';
-    }
-
-    console.debug('[DEBUG] token:', token);
-    console.debug('[DEBUG] type:', type);
-
-    if (token && type === 'recovery') {
-      console.debug('[INFO] Пытаемся обменять токен на сессию...');
-      supabase.auth.exchangeCodeForSession(token).then(({ data, error }) => {
-        if (error) {
-          console.error('[ERROR] Ошибка обмена токена:', error.message);
-          setToastMessage('Ссылка устарела или недействительна');
-        } else {
-          console.debug('[SUCCESS] Сессия установлена:', data.session);
-          setHasSession(true);
-        }
-      });
-    } else {
-      console.warn('[WARN] Токен не найден в URL или неверный type');
-    }
+    checkSession();
   }, []);
 
   const validatePassword = (pass) => {
@@ -69,9 +52,7 @@ export default function ResetPasswordPage() {
     }
 
     if (!validatePassword(password)) {
-      setToastMessage(
-        'Пароль должен быть не менее 8 символов, содержать заглавную букву и спецсимвол'
-      );
+      setToastMessage('Пароль должен быть не менее 8 символов, содержать заглавную букву и спецсимвол');
       return;
     }
 
@@ -80,11 +61,12 @@ export default function ResetPasswordPage() {
     setLoading(false);
 
     if (error) {
-      console.error('[ERROR] Ошибка смены пароля:', error.message);
       setToastMessage(error.message);
     } else {
-      console.log('[SUCCESS] Пароль успешно изменен');
       setToastMessage('Пароль успешно изменен');
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
     }
   };
 
@@ -94,9 +76,9 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white">
       <Header />
       <main className="flex-grow flex items-center justify-center px-4">
-        {!hasSession ? (
-          <p className="text-lg text-white/80">Проверка токена...</p>
-        ) : (
+        {checkingToken ? (
+          <p className="text-xl">Проверка токена...</p>
+        ) : hasSession ? (
           <form
             onSubmit={handleChangePassword}
             className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl"
@@ -159,16 +141,18 @@ export default function ResetPasswordPage() {
               {loading ? 'Сохраняем...' : 'Сменить пароль'}
             </button>
           </form>
-          
+        ) : (
+          <p className="text-xl text-red-400">Ошибка: недействительная ссылка</p>
         )}
       </main>
 
       {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
       )}
     </div>
   );
 }
+
 
 
 
