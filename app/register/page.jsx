@@ -28,7 +28,7 @@ const passwordValidations = {
 };
 
 
- useEffect(() => {
+useEffect(() => {
   if (typeof window !== "undefined") {
     window.onTelegramAuth = function (user) {
       localStorage.setItem("token", JSON.stringify(user));
@@ -41,7 +41,7 @@ const passwordValidations = {
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?7";
     script.async = true;
-    script.setAttribute("data-telegram-login", "BetLyticBot");
+    script.setAttribute("data-telegram-login", "BetLyticBot"); // Замените на имя вашего бота
     script.setAttribute("data-size", "medium");
     script.setAttribute("data-userpic", "false");
     script.setAttribute("data-lang", "ru");
