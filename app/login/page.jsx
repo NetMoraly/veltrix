@@ -18,7 +18,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
-  const pathname = usePathname(); // ✅ добавлено
+  const pathname = usePathname();
+
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -45,7 +47,7 @@ export default function LoginPage() {
     }
   }, [router, pathname]);
 
-  const supabase = createClientComponentClient();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -153,13 +155,8 @@ export default function LoginPage() {
       </div>
     </>
   );
+  
 }
-
-
-
-
-
-
 
 
 

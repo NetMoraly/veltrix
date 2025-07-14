@@ -9,16 +9,23 @@ import Toast from '../components/Toast';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+ const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [repeatPassword, setRepeatPassword] = useState('');
+const [toastMessage, setToastMessage] = useState('');
+const [loading, setLoading] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
-  const router = useRouter();
-  const pathname = usePathname(); // ✅ добавлено
+const router = useRouter();
+const pathname = usePathname();
+
+const passwordValidations = {
+  minLength: password.length >= 8,
+  hasUppercase: /[A-ZА-Я]/.test(password),
+  hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
+};
+
 
   useEffect(() => {
     window.onTelegramAuth = function (user) {
