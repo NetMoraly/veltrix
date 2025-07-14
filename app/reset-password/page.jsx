@@ -13,44 +13,44 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const [hasToken, setHasToken] = useState(false);
 
+  const [hasToken, setHasToken] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const token = searchParams.get('token');
-    const type = searchParams.get('type');
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.slice(1)); // удаляем #
 
-    console.log('[DEBUG] URLSearchParams:', Object.fromEntries(searchParams.entries()));
-    console.log('[DEBUG] token:', token);
-    console.log('[DEBUG] type:', type);
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
 
-    if (token && type === 'recovery') {
-      supabase.auth
-        .exchangeCodeForSession(token)
-        .then(({ data, error }) => {
-          if (error) {
-            console.error('[ERROR] exchangeCodeForSession:', error.message);
-            setToastMessage('Ошибка: ссылка недействительна или устарела');
-            return;
-          }
+    console.log('[DEBUG] hash:', hash);
+    console.log('[DEBUG] accessToken:', accessToken);
+    console.log('[DEBUG] refreshToken:', refreshToken);
 
-          console.log('[SUCCESS] Session получена:', data?.session);
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      }).then(({ error }) => {
+        if (error) {
+          console.error('[ERROR] setSession:', error.message);
+          setToastMessage('Ошибка установления сессии');
+        } else {
+          console.log('[SUCCESS] Сессия установлена');
           setHasToken(true);
-        })
-        .catch((e) => {
-          console.error('[CATCH] Ошибка обмена токена:', e);
-        });
+        }
+      });
     } else {
-      console.warn('[WARN] Токен не найден в URL или неверный type');
-      setToastMessage('Ссылка недействительна');
+      console.warn('[WARN] Токен не найден в hash');
+      setToastMessage('Ссылка недействительна или устарела');
     }
-  }, [supabase]);
+  }, []);
 
-  const validatePassword = (pass) =>
-    /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
+  const validatePassword = (pass) => {
+    return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
+  };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -71,17 +71,12 @@ export default function ResetPasswordPage() {
     }
 
     setLoading(true);
-    console.log('[ACTION] Обновляем пароль...');
-
     const { error } = await supabase.auth.updateUser({ password });
-
     setLoading(false);
 
     if (error) {
-      console.error('[ERROR] updateUser:', error.message);
       setToastMessage(error.message);
     } else {
-      console.log('[SUCCESS] Пароль успешно изменён');
       setToastMessage('Пароль успешно изменен');
     }
   };
@@ -117,9 +112,15 @@ export default function ResetPasswordPage() {
 
           {showPasswordRules && (
             <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-              <li className={password.length >= 8 ? 'text-green-400' : ''}>• Не менее 8 символов</li>
-              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 заглавная буква</li>
-              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 спецсимвол</li>
+              <li className={password.length >= 8 ? 'text-green-400' : ''}>
+                • Не менее 8 символов
+              </li>
+              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
+                • Минимум 1 заглавная буква
+              </li>
+              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
+                • Минимум 1 спецсимвол
+              </li>
             </ul>
           )}
 
@@ -150,7 +151,9 @@ export default function ResetPasswordPage() {
         </form>
       </main>
 
-      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
+      )}
     </div>
   );
 }
