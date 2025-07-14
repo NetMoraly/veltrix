@@ -182,7 +182,7 @@ const passwordValidations = {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
               >
                 {loading ? 'Регистрация...' : 'Продолжить'}
               </button>
@@ -191,16 +191,16 @@ const passwordValidations = {
             <div className="mt-4">
   <button
     type="button"
-    className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative"
+    className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
     style={{ position: "relative", overflow: "hidden" }}
   >
     <Image
-      src="/telegram-icon.svg"
+      src="/plane.png"
       alt="Telegram Icon"
       width={20}
       height={20}
     />
-    Войти через Telegram
+    Зарегестрироваться через Telegram
     <div id="telegram-login" className="absolute inset-0 opacity-0 z-10" />
   </button>
 </div>

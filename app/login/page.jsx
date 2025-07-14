@@ -122,7 +122,7 @@ useEffect(() => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
               >
                 {loading ? "Вход..." : "Войти"}
               </button>
@@ -131,7 +131,7 @@ useEffect(() => {
             <div className="mt-3">
   <button
     type="button"
-    className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative"
+    className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
     style={{ position: "relative", overflow: "hidden" }}
   >
     <Image
