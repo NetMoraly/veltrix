@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Toast from '../components/Toast';
+import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -19,24 +19,24 @@ export default function ResetPasswordPage() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const token = searchParams.get('token');
-    const type = searchParams.get('type');
+    const url = new URL(window.location.href);
+    const token = url.searchParams.get('token');
+    const type = url.searchParams.get('type');
 
     console.debug('[DEBUG] token:', token);
     console.debug('[DEBUG] type:', type);
 
     if (token && type === 'recovery') {
-      supabase.auth.exchangeCodeForSession(token)
-        .then(({ data, error }) => {
-          if (error) {
-            console.error('[ERROR] exchangeCodeForSession:', error.message);
-            setToastMessage('Ссылка устарела или недействительна');
-          } else {
-            console.debug('[SUCCESS] Session:', data.session);
-            setHasToken(true);
-          }
-        });
+      supabase.auth.exchangeCodeForSession(token).then(({ data, error }) => {
+        if (error) {
+          console.error('[ERROR] Ошибка обмена токена:', error.message);
+          setToastMessage('Ссылка сброса устарела или недействительна');
+          return;
+        }
+
+        console.debug('[DEBUG] Сессия установлена:', data.session);
+        setHasToken(true);
+      });
     } else {
       console.warn('[WARN] Токен не найден в URL или неверный type');
     }
@@ -69,11 +69,10 @@ export default function ResetPasswordPage() {
     setLoading(false);
 
     if (error) {
-      console.error('[ERROR] updateUser:', error.message);
+      console.error('[ERROR] Ошибка обновления пароля:', error.message);
       setToastMessage(error.message);
     } else {
-      console.log('[SUCCESS] Пароль обновлен');
-      setToastMessage('Пароль успешно изменен');
+      setToastMessage('Пароль успешно изменён');
     }
   };
 
@@ -108,9 +107,15 @@ export default function ResetPasswordPage() {
 
           {showPasswordRules && (
             <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-              <li className={password.length >= 8 ? 'text-green-400' : ''}>• Не менее 8 символов</li>
-              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 заглавная буква</li>
-              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 спецсимвол</li>
+              <li className={password.length >= 8 ? 'text-green-400' : ''}>
+                • Не менее 8 символов
+              </li>
+              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
+                • Минимум 1 заглавная буква
+              </li>
+              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
+                • Минимум 1 спецсимвол
+              </li>
             </ul>
           )}
 
@@ -133,17 +138,22 @@ export default function ResetPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading || !hasToken}
+            disabled={loading}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
           >
             {loading ? 'Сохраняем...' : 'Сменить пароль'}
           </button>
         </form>
       </main>
-      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
+      )}
     </div>
   );
 }
+
+
 
 
 
