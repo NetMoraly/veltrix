@@ -140,7 +140,32 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center">
               <p className="text-white/60 mb-2">Или войдите через Telegram:</p>
-              <div id="telegram-login-btn" className="flex justify-center mt-4" />
+         <div className="mt-6">
+  <p className="text-white/60 mb-2 text-center">Или войдите через Telegram:</p>
+  <div className="flex justify-center mt-4">
+    <button
+  onClick={() => {
+    const botName = 'BetLyticBot';
+    const redirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`;
+    window.location.href = `https://oauth.telegram.org/auth?bot_id=${process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID}&origin=${process.env.NEXT_PUBLIC_BASE_URL}&embed=1&request_access=write&redirect_uri=${redirectUrl}`;
+  }}
+  className="flex items-center justify-center gap-2 px-4 py-3 w-full bg-[#229ED9] hover:bg-[#1e8cbe] text-white font-medium rounded-lg transition"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 240 240"
+    fill="white"
+  >
+    <path d="M120,0C53.729,0,0,53.729,0,120s53.729,120,120,120s120-53.729,120-120S186.271,0,120,0z M174.775,84.775 l-22.5,106.25c-1.25,5.625-4.375,7.5-8.75,4.375l-24.25-17.875l-11.75,11.25c-1.25,1.25-2.5,2.5-5,2.5l1.875-26.25l47.5-43.125 c2.5-2.5-0.625-3.75-3.75-1.25l-58.75,36.875l-25-7.5c-5-1.25-5-5-1.25-6.25l97.5-37.5 C171.025,76.275,176.025,79.4,174.775,84.775z" />
+  </svg>
+  Войти через Telegram
+</button>
+
+  </div>
+</div>
+
             </div>
           </div>
         </div>
