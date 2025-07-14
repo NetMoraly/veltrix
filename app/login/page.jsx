@@ -5,9 +5,9 @@ import Header from "../components/Header";
 import Toast from "../components/Toast";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Script from "next/script";
+import { useRouter, usePathname } from "next/navigation";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 
 export default function LoginPage() {
@@ -16,7 +16,9 @@ export default function LoginPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
+  const pathname = usePathname(); // ✅ добавлено
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,9 +26,26 @@ export default function LoginPage() {
         localStorage.setItem("token", JSON.stringify(user));
         router.push("/dashboard");
       };
+
+      const existing = document.querySelector('script[src*="telegram-widget"]');
+      if (existing) existing.remove();
+
+      const script = document.createElement('script');
+      script.src = 'https://telegram.org/js/telegram-widget.js?7';
+      script.async = true;
+      script.setAttribute('data-telegram-login', 'BetLyticBot');
+      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-userpic', 'false');
+      script.setAttribute('data-lang', 'ru');
+      script.setAttribute('data-request-access', 'write');
+      script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+      script.setAttribute('data-auth-url', `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`);
+
+      document.getElementById('telegram-login-btn')?.appendChild(script);
     }
-  }, [router]);
-const supabase = createClientComponentClient();
+  }, [router, pathname]);
+
+  const supabase = createClientComponentClient();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,7 +55,7 @@ const supabase = createClientComponentClient();
       return;
     }
     setLoading(true);
-          
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
@@ -51,6 +70,7 @@ const supabase = createClientComponentClient();
     }
 
 
+
     router.push("/dashboard");
   };
 
@@ -58,7 +78,7 @@ const supabase = createClientComponentClient();
     <>
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px]">
-       <div className="relative flex-grow flex items-center justify-center px-4">
+        <div className="relative flex-grow flex items-center justify-center px-4">
           <div className="absolute inset-0 z-0">
             <div className="absolute w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-3xl top-10 left-10 animate-pulse" />
             <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
@@ -118,31 +138,15 @@ const supabase = createClientComponentClient();
 
             <div className="mt-6 text-center">
               <p className="text-white/60 mb-2">Или войдите через Telegram:</p>
-           <div className="flex justify-center mt-4">
-  <div
-    dangerouslySetInnerHTML={{
-      __html: `
-        <script async src="https://telegram.org/js/telegram-widget.js?7"
-          data-telegram-login="BetLyticBot"
-          data-size="large"
-          data-userpic="false"
-          data-lang="ru"
-          data-request-access="write"
-          data-onauth="onTelegramAuth(user)"
-          data-auth-url="${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram">
-        </script>
-      `,
-    }}
-  />
-</div>
-
+              <div id="telegram-login-btn" className="flex justify-center mt-4" />
             </div>
           </div>
         </div>
 
         <div className="mt-12">
-  <Footer />
-</div>
+          <Footer />
+        </div>
+
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage("")} />
         )}
@@ -150,6 +154,8 @@ const supabase = createClientComponentClient();
     </>
   );
 }
+
+
 
 
 

@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Link from 'next/link';
-import Script from 'next/script';
 import Toast from '../components/Toast';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -18,76 +16,88 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const router = useRouter();
 
-  const passwordValidations = {
-    minLength: password.length >= 8,
-    hasUppercase: /[A-ZА-Я]/.test(password),
-    hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
-  };
+  const router = useRouter();
+  const pathname = usePathname(); // ✅ добавлено
 
   useEffect(() => {
     window.onTelegramAuth = function (user) {
       localStorage.setItem('token', JSON.stringify(user));
       router.push('/dashboard');
     };
-  }, [router]);
-  
-const supabase = createClientComponentClient();
 
-const handleRegister = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    const existing = document.querySelector('script[src*="telegram-widget"]');
+    if (existing) existing.remove();
 
-  try {
-    if (password !== repeatPassword) {
-      setToastMessage('Пароли не совпадают');
+    const script = document.createElement('script');
+    script.src = 'https://telegram.org/js/telegram-widget.js?7';
+    script.async = true;
+    script.setAttribute('data-telegram-login', 'BetLyticBot');
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-userpic', 'false');
+    script.setAttribute('data-lang', 'ru');
+    script.setAttribute('data-request-access', 'write');
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+    script.setAttribute('data-auth-url', `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`);
+
+    document.getElementById('telegram-login-btn')?.appendChild(script);
+  }, [pathname]);
+
+  const supabase = createClientComponentClient();
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (password !== repeatPassword) {
+        setToastMessage('Пароли не совпадают');
+        setLoading(false);
+        return;
+      }
+
+      const checkResponse = await fetch('/api/check-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!checkResponse.ok) {
+        setToastMessage('Ошибка проверки email. Попробуйте позже.');
+        setLoading(false);
+        return;
+      }
+
+      const { exists } = await checkResponse.json();
+
+      if (exists) {
+        setToastMessage('Этот email уже зарегистрирован. Попробуйте войти.');
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        setToastMessage('Ошибка при регистрации: ' + error.message);
+      } else {
+        setToastMessage(' Подтвердите регистрацию через email');
+      }
+
+    } catch (err) {
+      setToastMessage('Непредвиденная ошибка: ' + err.message);
+    } finally {
       setLoading(false);
-      return;
     }
+  };
 
-    const checkResponse = await fetch('/api/check-user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-
-    if (!checkResponse.ok) {
-      setToastMessage('Ошибка проверки email. Попробуйте позже.');
-      setLoading(false);
-      return;
-    }
-
-    const { exists } = await checkResponse.json();
-
-    if (exists) {
-      setToastMessage('Этот email уже зарегистрирован. Попробуйте войти.');
-      setLoading(false);
-      return;
-    }
-
-    // signup
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      setToastMessage('Ошибка при регистрации: ' + error.message);
-    } else {
-      setToastMessage(' Подтвердите регистрацию через email');
-    }
-
-  } catch (err) {
-    setToastMessage('Непредвиденная ошибка: ' + err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-  return ( 
+  return (
     <>
       <Header />
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] pt-[96px]">
@@ -173,24 +183,7 @@ const handleRegister = async (e) => {
 
             <div className="mt-6 text-center">
               <p className="text-white/60 mb-2">Или зарегистрируйтесь через Telegram:</p>
-              <div className="flex justify-center mt-4">
-  <div
-    dangerouslySetInnerHTML={{
-      __html: `
-        <script async src="https://telegram.org/js/telegram-widget.js?7"
-          data-telegram-login="BetLyticBot"
-          data-size="large"
-          data-userpic="false"
-          data-lang="ru"
-          data-request-access="write"
-          data-onauth="onTelegramAuth(user)"
-          data-auth-url="${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram">
-        </script>
-      `,
-    }}
-  />
-</div>
-
+              <div id="telegram-login-btn" className="flex justify-center mt-4" />
             </div>
           </div>
         </div>
