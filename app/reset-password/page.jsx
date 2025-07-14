@@ -19,19 +19,29 @@ export default function ResetPasswordPage() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const hash = window.location.hash;
-    const accessToken = new URLSearchParams(hash).get('#access_token');
+  const hash = window.location.hash;
+  const params = new URLSearchParams(hash.slice(1)); // удаляем #
 
-    if (accessToken) {
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: '',
-      });
-      setHasToken(true);
-    } else {
-      router.push('/login'); // если нет токена — редирект
-    }
-  }, [router, supabase]);
+  const accessToken = params.get('access_token');
+  const refreshToken = params.get('refresh_token');
+
+  if (accessToken && refreshToken) {
+    supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    }).then(({ error }) => {
+      if (error) {
+        console.error('Ошибка setSession:', error);
+        router.push('/login');
+      } else {
+        setHasToken(true);
+      }
+    });
+  } else {
+    router.push('/login'); // если нет токена — редирект
+  }
+}, [router, supabase]);
+
 
  const validatePassword = (pass) => {
     return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
