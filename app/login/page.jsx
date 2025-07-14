@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
+import Image from "next/image";
 
 
 export default function LoginPage() {
@@ -22,30 +22,34 @@ export default function LoginPage() {
 
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.onTelegramAuth = function (user) {
-        localStorage.setItem("token", JSON.stringify(user));
-        router.push("/dashboard");
-      };
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    window.onTelegramAuth = function (user) {
+      localStorage.setItem("token", JSON.stringify(user));
+      router.push("/dashboard");
+    };
 
-      const existing = document.querySelector('script[src*="telegram-widget"]');
-      if (existing) existing.remove();
+    const existing = document.querySelector('script[src*="telegram-widget"]');
+    if (existing) existing.remove();
 
-      const script = document.createElement('script');
-      script.src = 'https://telegram.org/js/telegram-widget.js?7';
-      script.async = true;
-      script.setAttribute('data-telegram-login', 'BetLyticBot');
-      script.setAttribute('data-size', 'large');
-      script.setAttribute('data-userpic', 'false');
-      script.setAttribute('data-lang', 'ru');
-      script.setAttribute('data-request-access', 'write');
-      script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-      script.setAttribute('data-auth-url', `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`);
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?7";
+    script.async = true;
+    script.setAttribute("data-telegram-login", "BetLyticBot");
+    script.setAttribute("data-size", "medium");
+    script.setAttribute("data-userpic", "false");
+    script.setAttribute("data-lang", "ru");
+    script.setAttribute("data-request-access", "write");
+    script.setAttribute("data-onauth", "onTelegramAuth(user)");
+    script.setAttribute(
+      "data-auth-url",
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`
+    );
 
-      document.getElementById('telegram-login-btn')?.appendChild(script);
-    }
-  }, [router, pathname]);
+    document.getElementById("telegram-login")?.appendChild(script);
+  }
+}, [pathname]);
+
 
 
 
@@ -124,6 +128,24 @@ export default function LoginPage() {
               </button>
             </form>
 
+            <div className="mt-3">
+  <button
+    type="button"
+    className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative"
+    style={{ position: "relative", overflow: "hidden" }}
+  >
+    <Image
+      src="plane.png"
+      alt="Telegram Icon"
+      width={20}
+      height={20}
+    />
+    Войти через Telegram
+    <div id="telegram-login" className="absolute inset-0 opacity-0 z-10" />
+  </button>
+</div>
+
+
             <div className="mt-4 text-sm text-white/60 text-center space-y-2">
               <p>
                 Нет аккаунта?{' '}
@@ -138,37 +160,13 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <div className="mt-6 text-center">
-              <p className="text-white/60 mb-2">Или войдите через Telegram:</p>
-         <div className="mt-6">
-  <p className="text-white/60 mb-2 text-center">Или войдите через Telegram:</p>
-  <div className="flex justify-center mt-4">
-    <button
-  onClick={() => {
-    const botName = 'BetLyticBot';
-    const redirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`;
-    window.location.href = `https://oauth.telegram.org/auth?bot_id=${process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID}&origin=${process.env.NEXT_PUBLIC_BASE_URL}&embed=1&request_access=write&redirect_uri=${redirectUrl}`;
-  }}
-  className="flex items-center justify-center gap-2 px-4 py-3 w-full bg-[#229ED9] hover:bg-[#1e8cbe] text-white font-medium rounded-lg transition"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 240 240"
-    fill="white"
-  >
-    <path d="M120,0C53.729,0,0,53.729,0,120s53.729,120,120,120s120-53.729,120-120S186.271,0,120,0z M174.775,84.775 l-22.5,106.25c-1.25,5.625-4.375,7.5-8.75,4.375l-24.25-17.875l-11.75,11.25c-1.25,1.25-2.5,2.5-5,2.5l1.875-26.25l47.5-43.125 c2.5-2.5-0.625-3.75-3.75-1.25l-58.75,36.875l-25-7.5c-5-1.25-5-5-1.25-6.25l97.5-37.5 C171.025,76.275,176.025,79.4,174.775,84.775z" />
-  </svg>
-  Войти через Telegram
-</button>
+
 
   </div>
 </div>
 
             </div>
-          </div>
-        </div>
+      
 
         <div className="mt-12">
           <Footer />
@@ -177,7 +175,7 @@ export default function LoginPage() {
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage("")} />
         )}
-      </div>
+     
     </>
   );
   
