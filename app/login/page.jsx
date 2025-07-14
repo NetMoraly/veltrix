@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 import Image from "next/image";
 
 
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [telegramLoading, setTelegramLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
@@ -25,8 +27,9 @@ export default function LoginPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.onTelegramAuth = async (user) => {
+        setTelegramLoading(true);
         try {
-          setLoading(true);
+
           const response = await fetch('/api/auth/telegram', {
             method: 'POST',
             headers: {
@@ -36,20 +39,16 @@ export default function LoginPage() {
           });
 
           if (!response.ok) {
-            throw new Error('Ошибка авторизации');
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Ошибка авторизации");
           }
 
-          const data = await response.json();
-          if (data.success) {
-            router.push("/dashboard");
-          } else {
-            setToastMessage(data.error || "Ошибка входа через Telegram");
-          }
+          router.push("/dashboard");
         } catch (error) {
           console.error('Telegram auth error:', error);
-          setToastMessage("Произошла ошибка при авторизации");
+          setToastMessage(error.message || "Ошибка входа через Telegram");
         } finally {
-          setLoading(false);
+          setTelegramLoading(false);
         }
       };
 
@@ -72,6 +71,7 @@ export default function LoginPage() {
         );
         script.onerror = () => {
           setToastMessage("Не удалось загрузить Telegram Widget");
+          setTelegramLoading(false);
         };
 
         const container = document.getElementById("telegram-login");
@@ -159,18 +159,21 @@ export default function LoginPage() {
             </form>
 
             <div className="mt-3">
-              <div 
-                id="telegram-login" 
-                className="w-full flex items-center justify-center gap-2 bg-[#0088CC] hover:bg-[#0077B5] text-white py-3 rounded-lg font-medium transition cursor-pointer"
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
+                style={{ position: "relative", overflow: "hidden" }}
+                disabled={telegramLoading}
               >
                 <Image
-                  src="/telegram-icon.svg"
+                  src="/plane.png"
                   alt="Telegram Icon"
                   width={20}
                   height={20}
                 />
-                Войти через Telegram
-              </div>
+                {telegramLoading ? "Вход через Telegram..." : "Войти через Telegram"}
+                <div id="telegram-login" className="absolute inset-0 opacity-0 z-10" />
+              </button>
             </div>
 
             <div className="mt-4 text-sm text-white/60 text-center space-y-2">
@@ -200,6 +203,8 @@ export default function LoginPage() {
   );
 
 }
+
+  
 
 
 
