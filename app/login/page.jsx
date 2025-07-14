@@ -160,11 +160,11 @@ useEffect(() => {
               </p>
             </div>
 
-    <Footer />
+   
 
   </div>
 </div>
-
+    <Footer />
             </div>
       
 
