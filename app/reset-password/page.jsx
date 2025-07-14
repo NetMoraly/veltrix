@@ -1,157 +1,136 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Header from '../components/Header';
-import Toast from '../components/Toast';
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const [checkingToken, setCheckingToken] = useState(true);
-  const [hasSession, setHasSession] = useState(false);
-
   const router = useRouter();
   const supabase = createClientComponentClient();
 
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      console.log('[DEBUG] session:', data.session);
-      if (data.session) {
-        setHasSession(true);
-      } else {
-        setToastMessage('Ссылка устарела или недействительна');
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      console.debug('[DEBUG] session:', session);
+
+      if (!session) {
+        setError('Ссылка недействительна. Пожалуйста, открой её напрямую из письма, в том же браузере.');
+        setLoading(false);
+        return;
       }
-      setCheckingToken(false);
+
+      setSession(session);
+      setLoading(false);
     };
 
     checkSession();
-  }, []);
+  }, [supabase]);
 
-  const validatePassword = (pass) => {
-    return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
-  };
+  const handleResetPassword = async () => {
+    setError('');
+    setSuccess('');
 
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-
-    if (!password || !repeatPassword) {
-      setToastMessage('Заполните оба поля');
+    if (newPassword !== confirmPassword) {
+      setError('Пароли не совпадают.');
       return;
     }
 
-    if (password !== repeatPassword) {
-      setToastMessage('Пароли не совпадают');
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setToastMessage('Пароль должен быть не менее 8 символов, содержать заглавную букву и спецсимвол');
-      return;
-    }
-
-    setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
-    setLoading(false);
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
 
     if (error) {
-      setToastMessage(error.message);
+      console.error('[ERROR] Смена пароля:', error);
+      setError('Ошибка при смене пароля. Попробуйте снова.');
     } else {
-      setToastMessage('Пароль успешно изменен');
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+      setSuccess('Пароль успешно обновлён! Сейчас вы будете перенаправлены...');
+      setTimeout(() => router.push('/login'), 3000);
     }
   };
 
-  const showPasswordRules = password.length > 0;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-white">
+        <p>Проверка токена...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white">
-      <Header />
-      <main className="flex-grow flex items-center justify-center px-4">
-        {checkingToken ? (
-          <p className="text-xl">Проверка токена...</p>
-        ) : hasSession ? (
-          <form
-            onSubmit={handleChangePassword}
-            className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl"
-          >
-            <h2 className="text-2xl font-bold text-center mb-6">Сброс пароля</h2>
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-[#1E003E] to-[#330056] text-white px-4">
+      <div className="bg-[#24004A] p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+        <h1 className="text-2xl font-bold mb-6">Сброс пароля</h1>
 
-            <div className="mb-2 relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Новый пароль"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-violet-400"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-sm text-white/70"
-              >
-                {showPassword ? 'Скрыть' : 'Показать'}
-              </button>
-            </div>
-
-            {showPasswordRules && (
-              <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-                <li className={password.length >= 8 ? 'text-green-400' : ''}>
-                  • Не менее 8 символов
-                </li>
-                <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
-                  • Минимум 1 заглавная буква
-                </li>
-                <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
-                  • Минимум 1 спецсимвол
-                </li>
-              </ul>
-            )}
-
-            <div className="mb-6 relative">
-              <input
-                type={showRepeatPassword ? 'text' : 'password'}
-                placeholder="Повторите пароль"
-                value={repeatPassword}
-                onChange={(e) => setRepeatPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-violet-400"
-              />
-              <button
-                type="button"
-                onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                className="absolute right-3 top-3 text-sm text-white/70"
-              >
-                {showRepeatPassword ? 'Скрыть' : 'Показать'}
-              </button>
-            </div>
-
+        <div className="mb-4 text-left">
+          <label className="block text-sm mb-2">Новый пароль</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-xl bg-[#330066] text-white focus:outline-none"
+              placeholder="Введите новый пароль"
+            />
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-purple-300"
             >
-              {loading ? 'Сохраняем...' : 'Сменить пароль'}
+              {showPassword ? 'Скрыть' : 'Показать'}
             </button>
-          </form>
-        ) : (
-          <p className="text-xl text-red-400">Ошибка: недействительная ссылка</p>
-        )}
-      </main>
+          </div>
+        </div>
 
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
-      )}
+        <div className="mb-4 text-left">
+          <label className="block text-sm mb-2">Повторите пароль</label>
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-xl bg-[#330066] text-white focus:outline-none"
+              placeholder="Повторите новый пароль"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-purple-300"
+            >
+              {showConfirmPassword ? 'Скрыть' : 'Показать'}
+            </button>
+          </div>
+        </div>
+
+        {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
+        {success && <p className="text-green-400 text-sm mb-3">{success}</p>}
+
+        <button
+          onClick={handleResetPassword}
+          className="w-full bg-[#A259FF] hover:bg-[#8e3dfd] transition py-2 rounded-xl font-semibold"
+        >
+          Сменить пароль
+        </button>
+
+        <p className="text-sm text-center text-gray-400 mt-5 max-w-xs mx-auto">
+          ⚠️ Если сброс не работает — открой ссылку прямо из письма, <br />
+          в том же браузере, где ты её запрашивал.
+        </p>
+      </div>
     </div>
   );
 }
+
 
 
 
