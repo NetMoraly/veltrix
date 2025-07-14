@@ -18,26 +18,26 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
- useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const type = params.get('type');
+useEffect(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const token = searchParams.get('token');
+  const type = searchParams.get('type');
 
   if (token && type === 'recovery') {
-    supabase.auth.exchangeCodeForSession(token)
-      .then(({ error }) => {
-        if (error) {
-          console.error('Ошибка exchangeCodeForSession:', error.message);
-          router.push('/login');
-        } else {
-          setHasToken(true);
-        }
-      });
+    supabase.auth.exchangeCodeForSession(token).then(({ data, error }) => {
+      if (error) {
+        console.error('Ошибка обмена токена:', error.message);
+        setToastMessage('Ссылка устарела или недействительна');
+        router.push('/login');
+      } else {
+        setHasToken(true);
+        console.log('Сессия установлена', data.session);
+      }
+    });
   } else {
-    router.push('/login'); // если нет токена — редирект
+    router.push('/login');
   }
-}, [router, supabase]);
-
+}, []);
 
  const validatePassword = (pass) => {
     return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
