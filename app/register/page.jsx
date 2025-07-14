@@ -121,7 +121,8 @@ const passwordValidations = {
             <div className="absolute w-[250px] h-[250px] bg-purple-400/10 rounded-full blur-2xl bottom-20 right-20 animate-pulse" />
           </div>
 
-          <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl text-white">
+         <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl text-white mt-[-10px]">
+
             <h2 className="text-2xl font-bold text-center mb-6">Регистрация</h2>
 
             <form className="space-y-4" onSubmit={handleRegister}>
@@ -216,12 +217,15 @@ const passwordValidations = {
 
   </div>
 </div>
-            </div>
-         
-        
+
 <div className="mt-12">
         <Footer />
         </div>
+
+            </div>
+         
+        
+
 
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage('')} />
