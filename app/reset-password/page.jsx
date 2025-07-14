@@ -23,39 +23,34 @@ export default function ResetPasswordPage() {
     const token = searchParams.get('token');
     const type = searchParams.get('type');
 
+    console.log('[DEBUG] URLSearchParams:', Object.fromEntries(searchParams.entries()));
+    console.log('[DEBUG] token:', token);
+    console.log('[DEBUG] type:', type);
+
     if (token && type === 'recovery') {
-      supabase.auth.verifyOtp({
-        token,
-        type: 'recovery',
-      }).then(async ({ data, error }) => {
-        if (error) {
-          console.error('Ошибка verifyOtp:', error.message);
-          setToastMessage('Ссылка устарела или недействительна');
-          router.push('/login');
-        } else {
-          const { access_token, refresh_token } = data.session;
-          const { error: sessionError } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-
-          if (sessionError) {
-            console.error('Ошибка setSession:', sessionError.message);
-            setToastMessage('Не удалось установить сессию');
-            router.push('/login');
-          } else {
-            setHasToken(true);
+      supabase.auth
+        .exchangeCodeForSession(token)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('[ERROR] exchangeCodeForSession:', error.message);
+            setToastMessage('Ошибка: ссылка недействительна или устарела');
+            return;
           }
-        }
-      });
-    } else {
-      router.push('/login');
-    }
-  }, [router, supabase]);
 
-  const validatePassword = (pass) => {
-    return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
-  };
+          console.log('[SUCCESS] Session получена:', data?.session);
+          setHasToken(true);
+        })
+        .catch((e) => {
+          console.error('[CATCH] Ошибка обмена токена:', e);
+        });
+    } else {
+      console.warn('[WARN] Токен не найден в URL или неверный type');
+      setToastMessage('Ссылка недействительна');
+    }
+  }, [supabase]);
+
+  const validatePassword = (pass) =>
+    /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -76,12 +71,17 @@ export default function ResetPasswordPage() {
     }
 
     setLoading(true);
+    console.log('[ACTION] Обновляем пароль...');
+
     const { error } = await supabase.auth.updateUser({ password });
+
     setLoading(false);
 
     if (error) {
+      console.error('[ERROR] updateUser:', error.message);
       setToastMessage(error.message);
     } else {
+      console.log('[SUCCESS] Пароль успешно изменён');
       setToastMessage('Пароль успешно изменен');
     }
   };
@@ -117,15 +117,9 @@ export default function ResetPasswordPage() {
 
           {showPasswordRules && (
             <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-              <li className={password.length >= 8 ? 'text-green-400' : ''}>
-                • Не менее 8 символов
-              </li>
-              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
-                • Минимум 1 заглавная буква
-              </li>
-              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
-                • Минимум 1 спецсимвол
-              </li>
+              <li className={password.length >= 8 ? 'text-green-400' : ''}>• Не менее 8 символов</li>
+              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 заглавная буква</li>
+              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 спецсимвол</li>
             </ul>
           )}
 
@@ -156,11 +150,10 @@ export default function ResetPasswordPage() {
         </form>
       </main>
 
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
-      )}
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
     </div>
   );
 }
+
 
 
