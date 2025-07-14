@@ -168,9 +168,10 @@ useEffect(() => {
             </div>
       
 
+                
         <div className="mt-12">
-          <Footer />
-        </div>
+                <Footer />
+                </div>
 
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage("")} />

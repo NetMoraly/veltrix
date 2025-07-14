@@ -219,8 +219,9 @@ const passwordValidations = {
             </div>
           </div>
         </div>
-
+<div className="mt-12">
         <Footer />
+        </div>
 
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage('')} />
