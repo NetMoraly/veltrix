@@ -53,7 +53,10 @@ export default function ContactsPage() {
           </div>
         </main>
 
-        <Footer />
+       <div className="mt-20">
+           <Footer />
+           </div>
+        
       </div>
     </>
   );
