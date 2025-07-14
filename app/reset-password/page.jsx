@@ -18,32 +18,44 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-useEffect(() => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const token = searchParams.get('token');
-  const type = searchParams.get('type');
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const token = searchParams.get('token');
+    const type = searchParams.get('type');
 
-  if (token && type === 'recovery') {
-    supabase.auth.exchangeCodeForSession(token).then(({ data, error }) => {
-      if (error) {
-        console.error('Ошибка обмена токена:', error.message);
-        setToastMessage('Ссылка устарела или недействительна');
-        router.push('/login');
-      } else {
-        setHasToken(true);
-        console.log('Сессия установлена', data.session);
-      }
-    });
-  } else {
-    router.push('/login');
-  }
-}, []);
+    if (token && type === 'recovery') {
+      supabase.auth.verifyOtp({ token, type: 'recovery' }).then(async ({ data, error }) => {
+        if (error) {
+          console.error('Ошибка verifyOtp:', error.message);
+          setToastMessage('Ссылка устарела или недействительна');
+          router.push('/login');
+        } else {
+          const { access_token, refresh_token } = data.session;
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
 
- const validatePassword = (pass) => {
+          if (sessionError) {
+            console.error('Ошибка setSession:', sessionError.message);
+            setToastMessage('Не удалось установить сессию');
+            router.push('/login');
+          } else {
+            console.log('✅ Сессия установлена через verifyOtp');
+            setHasToken(true);
+          }
+        }
+      });
+    } else {
+      router.push('/login');
+    }
+  }, [router, supabase]);
+
+  const validatePassword = (pass) => {
     return /[A-Z]/.test(pass) && /[^a-zA-Z0-9]/.test(pass) && pass.length >= 8;
   };
 
-const handleChangePassword = async (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
 
     if (!password || !repeatPassword) {
@@ -148,4 +160,5 @@ const handleChangePassword = async (e) => {
     </div>
   );
 }
+
 
