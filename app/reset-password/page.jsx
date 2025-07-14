@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import Toast from '../components/Toast';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Header from '../components/Header';
+import Toast from '../components/Toast';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -13,38 +13,32 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
   const [hasToken, setHasToken] = useState(false);
+
   const router = useRouter();
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const hash = window.location.hash;
-    const params = new URLSearchParams(hash.slice(1)); // удаляем #
+    const searchParams = new URLSearchParams(window.location.search);
+    const token = searchParams.get('token');
+    const type = searchParams.get('type');
 
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
+    console.debug('[DEBUG] token:', token);
+    console.debug('[DEBUG] type:', type);
 
-    console.log('[DEBUG] hash:', hash);
-    console.log('[DEBUG] accessToken:', accessToken);
-    console.log('[DEBUG] refreshToken:', refreshToken);
-
-    if (accessToken && refreshToken) {
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ error }) => {
-        if (error) {
-          console.error('[ERROR] setSession:', error.message);
-          setToastMessage('Ошибка установления сессии');
-        } else {
-          console.log('[SUCCESS] Сессия установлена');
-          setHasToken(true);
-        }
-      });
+    if (token && type === 'recovery') {
+      supabase.auth.exchangeCodeForSession(token)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('[ERROR] exchangeCodeForSession:', error.message);
+            setToastMessage('Ссылка устарела или недействительна');
+          } else {
+            console.debug('[SUCCESS] Session:', data.session);
+            setHasToken(true);
+          }
+        });
     } else {
-      console.warn('[WARN] Токен не найден в hash');
-      setToastMessage('Ссылка недействительна или устарела');
+      console.warn('[WARN] Токен не найден в URL или неверный type');
     }
   }, []);
 
@@ -75,8 +69,10 @@ export default function ResetPasswordPage() {
     setLoading(false);
 
     if (error) {
+      console.error('[ERROR] updateUser:', error.message);
       setToastMessage(error.message);
     } else {
+      console.log('[SUCCESS] Пароль обновлен');
       setToastMessage('Пароль успешно изменен');
     }
   };
@@ -112,15 +108,9 @@ export default function ResetPasswordPage() {
 
           {showPasswordRules && (
             <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-              <li className={password.length >= 8 ? 'text-green-400' : ''}>
-                • Не менее 8 символов
-              </li>
-              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
-                • Минимум 1 заглавная буква
-              </li>
-              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
-                • Минимум 1 спецсимвол
-              </li>
+              <li className={password.length >= 8 ? 'text-green-400' : ''}>• Не менее 8 символов</li>
+              <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 заглавная буква</li>
+              <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>• Минимум 1 спецсимвол</li>
             </ul>
           )}
 
@@ -143,17 +133,14 @@ export default function ResetPasswordPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !hasToken}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
           >
             {loading ? 'Сохраняем...' : 'Сменить пароль'}
           </button>
         </form>
       </main>
-
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
-      )}
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
     </div>
   );
 }
