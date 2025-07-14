@@ -13,8 +13,8 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
   const [hasToken, setHasToken] = useState(false);
+
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -24,7 +24,10 @@ export default function ResetPasswordPage() {
     const type = searchParams.get('type');
 
     if (token && type === 'recovery') {
-      supabase.auth.verifyOtp({ token, type: 'recovery' }).then(async ({ data, error }) => {
+      supabase.auth.verifyOtp({
+        token,
+        type: 'recovery',
+      }).then(async ({ data, error }) => {
         if (error) {
           console.error('Ошибка verifyOtp:', error.message);
           setToastMessage('Ссылка устарела или недействительна');
@@ -41,7 +44,6 @@ export default function ResetPasswordPage() {
             setToastMessage('Не удалось установить сессию');
             router.push('/login');
           } else {
-            console.log('✅ Сессия установлена через verifyOtp');
             setHasToken(true);
           }
         }
