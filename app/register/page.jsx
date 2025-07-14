@@ -173,17 +173,24 @@ const handleRegister = async (e) => {
 
             <div className="mt-6 text-center">
               <p className="text-white/60 mb-2">Или зарегистрируйтесь через Telegram:</p>
-              <Script
-                src="https://telegram.org/js/telegram-widget.js?7"
-                data-telegram-login="BetLyticBot"
-                data-size="large"
-                data-userpic="false"
-                data-lang="ru"
-                data-request-access="write"
-                data-onauth="onTelegramAuth(user)"
-                strategy="afterInteractive"
-                data-auth-url={`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`}
-              />
+              <div className="flex justify-center mt-4">
+  <div
+    dangerouslySetInnerHTML={{
+      __html: `
+        <script async src="https://telegram.org/js/telegram-widget.js?7"
+          data-telegram-login="BetLyticBot"
+          data-size="large"
+          data-userpic="false"
+          data-lang="ru"
+          data-request-access="write"
+          data-onauth="onTelegramAuth(user)"
+          data-auth-url="${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram">
+        </script>
+      `,
+    }}
+  />
+</div>
+
             </div>
           </div>
         </div>
