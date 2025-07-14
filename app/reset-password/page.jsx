@@ -19,27 +19,18 @@ export default function ResetPasswordPage() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-  const hash = window.location.hash;
-  const params = new URLSearchParams(hash.slice(1)); // удаляем #
+  const checkSession = async () => {
+    const { data: { session }, error } = await supabase.auth.getSession();
 
-  const accessToken = params.get('access_token');
-  const refreshToken = params.get('refresh_token');
+    if (error || !session) {
+      console.warn('Нет сессии после редиректа:', error);
+      router.push('/login');
+    } else {
+      setHasToken(true);
+    }
+  };
 
-  if (accessToken && refreshToken) {
-    supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    }).then(({ error }) => {
-      if (error) {
-        console.error('Ошибка setSession:', error);
-        router.push('/login');
-      } else {
-        setHasToken(true);
-      }
-    });
-  } else {
-    router.push('/login'); // если нет токена — редирект
-  }
+  checkSession();
 }, [router, supabase]);
 
 
