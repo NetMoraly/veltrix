@@ -36,7 +36,7 @@ const supabase = createClientComponentClient();
       return;
     }
     setLoading(true);
-
+          
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
@@ -50,7 +50,7 @@ const supabase = createClientComponentClient();
       return;
     }
 
-    localStorage.setItem("token", "true");
+
     router.push("/dashboard");
   };
 

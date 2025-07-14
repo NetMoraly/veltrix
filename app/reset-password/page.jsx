@@ -18,7 +18,7 @@ export default function ResetPasswordPage() {
       setToastMessage('Введите новый пароль');
       return;
     }
-
+ƒ
     setLoading(true);
 
     const { error } = await supabase.auth.updateUser({ password }); // <-- используешь этого клиента
@@ -27,7 +27,7 @@ export default function ResetPasswordPage() {
     if (error) {
       setToastMessage(error.message);
     } else {
-      setToastMessage('✅ Пароль успешно изменен');
+      setToastMessage(' Пароль успешно изменен');
     }
   }
 

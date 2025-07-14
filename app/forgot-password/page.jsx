@@ -26,7 +26,7 @@ const { error } = await supabase.auth.resetPasswordForEmail(email, {
     if (error) {
       setToastMessage(error.message);
     } else {
-      setToastMessage('📩 Письмо с восстановлением отправлено');
+      setToastMessage('Письмо с восстановлением отправлено');
     }
   };
 

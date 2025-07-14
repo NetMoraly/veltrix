@@ -78,7 +78,7 @@ const handleRegister = async (e) => {
     if (error) {
       setToastMessage('Ошибка при регистрации: ' + error.message);
     } else {
-      setToastMessage('📩 Подтвердите регистрацию через email');
+      setToastMessage(' Подтвердите регистрацию через email');
     }
 
   } catch (err) {
