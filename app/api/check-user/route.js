@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req) {
+  // DEBUG лог старта запроса
+  console.log('>>> [API] /api/check-user вызван');
+
+  // Инициируем клиента Supabase
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -9,7 +13,11 @@ export async function POST(req) {
 
   const { email } = await req.json();
 
+  // DEBUG лог входящих данных
+  console.log('>>> Email для проверки:', email);
+
   if (!email) {
+    console.log('>>> [API] Не указан email');
     return NextResponse.json({ error: 'Email is required' }, { status: 400 });
   }
 
@@ -18,39 +26,40 @@ export async function POST(req) {
   const perPage = 50;
 
   try {
-    // --- Вот сюда! ---
     while (true) {
       const { data, error } = await supabase.auth.admin.listUsers({
         page,
         perPage,
       });
 
-      // Логируем, что реально приходит от сервера!
+      // DEBUG лог всех пользователей на странице
       console.log(`Page ${page}, users:`, data?.users?.map(u => u.email));
 
       if (error) {
+        console.log('>>> [API] Ошибка Supabase:', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
       if (!data?.users?.length) {
+        console.log('>>> [API] Нет больше пользователей');
         break;
       }
 
       if (data.users.some((u) => u.email === email)) {
+        console.log('>>> [API] Email найден в базе:', email);
         exists = true;
         break;
       }
 
       page++;
     }
-    // --- До сюда! ---
 
+    console.log('>>> [API] Проверка завершена, exists:', exists);
     return NextResponse.json({ exists }, { status: 200 });
 
   } catch (e) {
-
+    console.log('>>> [API] Exception:', e);
     return NextResponse.json({ error: e.message || 'Unknown error' }, { status: 500 });
-
   }
-
 }
+
