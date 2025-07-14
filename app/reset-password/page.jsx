@@ -18,19 +18,24 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-  const checkSession = async () => {
-    const { data: { session }, error } = await supabase.auth.getSession();
+ useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const type = params.get('type');
 
-    if (error || !session) {
-      console.warn('Нет сессии после редиректа:', error);
-      router.push('/login');
-    } else {
-      setHasToken(true);
-    }
-  };
-
-  checkSession();
+  if (token && type === 'recovery') {
+    supabase.auth.exchangeCodeForSession(token)
+      .then(({ error }) => {
+        if (error) {
+          console.error('Ошибка exchangeCodeForSession:', error.message);
+          router.push('/login');
+        } else {
+          setHasToken(true);
+        }
+      });
+  } else {
+    router.push('/login'); // если нет токена — редирект
+  }
 }, [router, supabase]);
 
 
