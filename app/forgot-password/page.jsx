@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Toast from '../components/Toast';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Head from 'next/head';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -17,11 +18,11 @@ export default function ForgotPassword() {
       return;
     }
 
-   const redirectUrl = `${window.location.origin}/reset-password`;
+    const redirectUrl = `${window.location.origin}/reset-password`;
 
-const { error } = await supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: redirectUrl,
-});
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
 
     if (error) {
       setToastMessage(error.message);
@@ -31,36 +32,51 @@ const { error } = await supabase.auth.resetPasswordForEmail(email, {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white">
-      <Header />
-      <main className="flex-grow flex items-center justify-center px-4">
-        <form
-          onSubmit={handleReset}
-          className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl"
-        >
-          <h2 className="text-2xl font-bold text-center mb-6">Восстановление пароля</h2>
-          <input
-            type="email"
-            placeholder="Введите email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 mb-4 focus:outline-none focus:ring-2 focus:ring-violet-400"
-          />
-          <button
-            type="submit"
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
-          >
-            Отправить ссылку
-          </button>
-        </form>
-      </main>
+    <>
+      <Head>
+        <title>Восстановление пароля | Veltrix</title>
+        <meta name="description" content="Сбросьте пароль для входа на платформу Veltrix." />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-      {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
-      )}
-    </div>
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white">
+        <Header />
+        <main className="flex-grow flex items-center justify-center px-4">
+          <form
+            onSubmit={handleReset}
+            className="w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl"
+          >
+            <h2 className="text-2xl font-bold text-center mb-6">Восстановление пароля</h2>
+            <input
+              type="email"
+              placeholder="Введите email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 mb-4 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            />
+            <button
+              type="submit"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
+            >
+              Отправить ссылку
+            </button>
+
+            <p className="text-xs text-white/60 mt-6 text-center leading-snug">
+              Если сброс не работает — открой ссылку прямо из письма,
+              <br />
+              в том же браузере, где ты её запрашивал.
+            </p>
+          </form>
+        </main>
+
+        {toastMessage && (
+          <Toast message={toastMessage} onClose={() => setToastMessage("")} />
+        )}
+      </div>
+    </>
   );
 }
+
 
 
 
