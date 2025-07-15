@@ -45,7 +45,7 @@ export default function SettingsPage() {
 
           {/* Telegram блок */}
           <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-xl">
-          
+
             {isBound ? (
               <div className="text-green-400 font-medium">
                 Telegram успешно привязан: <span className="underline">@{telegramUsername}</span>
@@ -77,6 +77,7 @@ export default function SettingsPage() {
   );
 
 
+  
 }
 
 
