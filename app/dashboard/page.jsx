@@ -1,13 +1,12 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import RouteGuard from '../components/RouteGuard'; // поправь путь под свою структуру
-import DashboardClient from '../components/DashboardClient';
+// Динамически загружаем клиентскую часть
+const DashboardClientWrapper = dynamic(() => import('../components/DashboardClient'), {
+  ssr: false,
+});
 
 export default function DashboardPage() {
-  return (
-    <RouteGuard>
-      <DashboardClient />
-    </RouteGuard>
-  );
+  return <DashboardClient />;
 }
+
 
