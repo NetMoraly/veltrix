@@ -19,64 +19,62 @@ export default function DashboardClient() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-    const [loading, setLoading] = useState(true);
-const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
+  useEffect(() => {
+    const checkAuthAndSubscription = async () => {
+      const { data, error: sessionError } = await supabase.auth.getSession();
 
+      console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
 
-useEffect(() => {
- const checkAuthAndSubscription = async () => {
-  const { data, error: sessionError } = await supabase.auth.getSession();
+      if (!data.session) {
+        console.warn('Нет сессии, редирект на логин', sessionError);
+        router.push('/login');
+        return;
+      }
 
-  console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
+      setSession(data.session);
 
-  if (!data.session) {
-    console.warn('Нет сессии, редирект на логин', sessionError);
-    router.push('/login');
-    return;
-  }
+      const { data: subscription, error: subError } = await supabase
+        .from('subscriptions')
+        .select('subscription_active, subscription_expires_at')
+        .eq('user_id', data.session.user.id)   // Используем data.session.user.id
+        .eq('subscription_active', true)
+        .single();
 
-  setSession(data.session);
+      if (subscription && subscription.subscription_expires_at) {
+        setHasActiveSubscription(true);
 
-  const { data: subscription, error: subError } = await supabase
-    .from('subscriptions')
-    .select('subscription_active, subscription_expires_at')
-    .eq('user_id', data.session.user.id)   // Здесь используем data.session.user.id
-    .eq('subscription_active', true)
-    .single();
+        const now = new Date();
+        const expires = new Date(subscription.subscription_expires_at);
+        const diffMs = expires - now;
+        const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 
-  if (subscription && subscription.subscription_expires_at) {
-    setHasActiveSubscription(true);
+        setDaysLeft(diffDays);
+      } else {
+        console.warn('Нет активной подписки или она истекла', subError);
+        setHasActiveSubscription(false);
+      }
 
-    const now = new Date();
-    const expires = new Date(subscription.subscription_expires_at);
-    const diffMs = expires - now;
-    const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      setLoading(false);
+    };
 
-    setDaysLeft(diffDays);
-  } else {
-    console.warn('Нет активной подписки или она истекла', subError);
-    setHasActiveSubscription(false);
-  }
+    checkAuthAndSubscription();
 
-  setLoading(false);
-};
+    // Важное: подписка на события изменения авторизации и обновление сессии в state
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("onAuthStateChange event:", event);
+      console.log("Текущая сессия:", session);
 
- checkAuthAndSubscription();
+      setSession(session);  // Обновляем состояние сессии при изменениях
+    });
 
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange((event, session) => {
-    console.log("onAuthStateChange event:", event);
-    console.log("Текущая сессия:", session);
-  });
-
-  return () => subscription.unsubscribe();
-}, [router, supabase]);
-
+    return () => subscription.unsubscribe();
+  }, [router, supabase]);
 
   const stats = [
     { day: 'Пн', value: 2 },
@@ -109,13 +107,13 @@ useEffect(() => {
     },
   ];
 
-if (loading) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      Загрузка...
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Загрузка...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
@@ -247,5 +245,6 @@ if (loading) {
       `}</style>
     </div>
   );
+
 }
 

@@ -25,7 +25,7 @@ export default function LoginPage() {
   const supabase = createClientComponentClient();
 
 
-  const handleLogin = async (e) => {
+const handleLogin = async (e) => {
   e.preventDefault();
 
   if (!email || !password) {
@@ -39,14 +39,16 @@ export default function LoginPage() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    // 🔒 Ждём реального появления сессии
-    const { data: sessionData } = await supabase.auth.getSession();
+    // Подписка на событие изменения авторизации
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        router.push("/dashboard");
+        authListener.subscription.unsubscribe(); // отписка
+      }
+    });
 
-    if (sessionData.session) {
-      router.push("/dashboard");
-    } else {
-      setToastMessage("Ошибка авторизации. Попробуйте ещё раз.");
-    }
+    // Альтернативно — можно поставить setTimeout с небольшой задержкой и потом проверить сессию, 
+    // но подписка лучше.
 
   } catch (error) {
     setToastMessage(error.message || "Неверный логин или пароль");
@@ -54,6 +56,7 @@ export default function LoginPage() {
     setLoading(false);
   }
 };
+
 
 
   const handleTelegramLogin = () => {
