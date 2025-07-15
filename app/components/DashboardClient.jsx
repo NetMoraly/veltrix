@@ -28,42 +28,42 @@ const [session, setSession] = useState(null);
 
 
 useEffect(() => {
-  const checkAuthAndSubscription = async () => {
-    const { data, error: sessionError } = await supabase.auth.getSession();
+ const checkAuthAndSubscription = async () => {
+  const { data, error: sessionError } = await supabase.auth.getSession();
 
-    console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
+  console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
 
-    if (!data.session) {
-      console.warn('Нет сессии, редирект на логин', sessionError);
-      router.push('/login');
-      return;
-    }
+  if (!data.session) {
+    console.warn('Нет сессии, редирект на логин', sessionError);
+    router.push('/login');
+    return;
+  }
 
-    setSession(data.session);// 👈 сохраняем сессию в state
+  setSession(data.session);
 
-    const { data: subscription, error: subError } = await supabase
-      .from('subscriptions')
-      .select('subscription_active, subscription_expires_at')
-      .eq('user_id', session.user.id)
-      .eq('subscription_active', true)
-      .single();
+  const { data: subscription, error: subError } = await supabase
+    .from('subscriptions')
+    .select('subscription_active, subscription_expires_at')
+    .eq('user_id', data.session.user.id)   // Здесь используем data.session.user.id
+    .eq('subscription_active', true)
+    .single();
 
-    if (subscription && subscription.subscription_expires_at) {
-      setHasActiveSubscription(true);
+  if (subscription && subscription.subscription_expires_at) {
+    setHasActiveSubscription(true);
 
-      const now = new Date();
-      const expires = new Date(subscription.subscription_expires_at);
-      const diffMs = expires - now;
-      const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    const now = new Date();
+    const expires = new Date(subscription.subscription_expires_at);
+    const diffMs = expires - now;
+    const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 
-      setDaysLeft(diffDays);
-    } else {
-      console.warn('Нет активной подписки или она истекла', subError);
-      setHasActiveSubscription(false);
-    }
+    setDaysLeft(diffDays);
+  } else {
+    console.warn('Нет активной подписки или она истекла', subError);
+    setHasActiveSubscription(false);
+  }
 
-    setLoading(false); // ✅ завершаем загрузку
-  };
+  setLoading(false);
+};
 
  checkAuthAndSubscription();
 
