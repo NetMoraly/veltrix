@@ -25,7 +25,7 @@ export default function LoginPage() {
   const supabase = createClientComponentClient();
 
 
-const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
   e.preventDefault();
 
   if (!email || !password) {
@@ -39,22 +39,21 @@ const handleLogin = async (e) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    // Подписка на событие изменения авторизации
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        router.push("/dashboard");
-        authListener.subscription.unsubscribe(); // отписка
-      }
-    });
+    // 🔒 Ждём реального появления сессии
+    const { data: sessionData } = await supabase.auth.getSession();
 
-    // Альтернативно — можно поставить setTimeout с небольшой задержкой и потом проверить сессию, 
-    // но подписка лучше.
+    if (sessionData.session) {
+      router.push("/dashboard");
+    } else {
+      setToastMessage("Ошибка авторизации. Попробуйте ещё раз.");
+    }
 
   } catch (error) {
     setToastMessage(error.message || "Неверный логин или пароль");
   } finally {
     setLoading(false);
   }
+
 };
 
 
@@ -141,12 +140,6 @@ const handleLogin = async (e) => {
           </div>
         </div>
 
-           {loading && (
-        <div className="loading-overlay">
-          <div className="loading-text">Загрузка...</div>
-        </div>
-      )}
-
 
         <div className="mt-15">
           <Footer />
@@ -155,54 +148,16 @@ const handleLogin = async (e) => {
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage("")} />
-
-        
       )}
-
-  {/* ✅ style вне условия */}
-    <style jsx>{`
-      .loading-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(22, 0, 41, 0.85);
-        backdrop-filter: blur(4px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        animation: fadeIn 0.3s ease forwards;
-      }
-
-      .loading-text {
-        font-size: 2.5rem;
-        font-weight: 700;
-        background: linear-gradient(90deg, #b44cff, #34ace4);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-        animation: pulse 2s infinite ease-in-out;
-      }
-
-      @keyframes pulse {
-        0%, 100% {
-          opacity: 1;
-          filter: brightness(1);
-        }
-        50% {
-          opacity: 0.6;
-          filter: brightness(1.3);
-        }
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    `}</style>
-  </>
-);
-
-
+    </>
+  );
+  
 }
+
+
+
+
+
+
 
 

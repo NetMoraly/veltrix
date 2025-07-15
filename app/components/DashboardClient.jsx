@@ -24,61 +24,68 @@ export default function DashboardClient() {
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
+  
+useEffect(() => {
+  const checkAuthAndSubscription = async () => {
+    const { data, error: sessionError } = await supabase.auth.getSession();
+    console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
 
-  useEffect(() => {
-    const checkAuthAndSubscription = async () => {
-      const { data, error: sessionError } = await supabase.auth.getSession();
+    const currentSession = data?.session;
 
-      console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
+    if (!currentSession) {
+      console.warn('Нет сессии, редирект на логин');
+      router.push('/login');
+      return;
+    }
 
-      if (!data.session) {
-        console.warn('Нет сессии, редирект на логин', sessionError);
-        router.push('/login');
-        return;
-      }
+    setSession(currentSession); // сохраняем в useState
 
-      setSession(data.session);
+    const userId = currentSession.user?.id;
+    if (!userId) {
+      console.warn('userId отсутствует, отменяем подписочный запрос');
+      return;
+    }
 
-      const userId = data.session.user.id; // <-- используем userId прямо из getSession()
+    console.log("User ID для подписки:", userId);
 
-      console.log("User ID для подписки:", userId);
+    const { data: subscription, error: subError } = await supabase
+      .from('subscriptions')
+      .select('subscription_active, subscription_expires_at')
+      .eq('user_id', userId)
+      .eq('subscription_active', true)
+      .single();
 
-      const { data: subscription, error: subError } = await supabase
-        .from('subscriptions')
-        .select('subscription_active, subscription_expires_at')
-        .eq('user_id', userId)
-        .eq('subscription_active', true)
-        .single();
+    if (subscription && subscription.subscription_expires_at) {
+      setHasActiveSubscription(true);
 
-      if (subscription && subscription.subscription_expires_at) {
-        setHasActiveSubscription(true);
+      const now = new Date();
+      const expires = new Date(subscription.subscription_expires_at);
+      const diffMs = expires - now;
+      const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 
-        const now = new Date();
-        const expires = new Date(subscription.subscription_expires_at);
-        const diffMs = expires - now;
-        const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      setDaysLeft(diffDays);
+    } else {
+      console.warn('Нет активной подписки или она истекла', subError);
+      setHasActiveSubscription(false);
+    }
 
-        setDaysLeft(diffDays);
-      } else {
-        console.warn('Нет активной подписки или она истекла', subError);
-        setHasActiveSubscription(false);
-      }
+    setLoading(false);
+  };
 
-      setLoading(false);
-    };
+  checkAuthAndSubscription();
 
-    checkAuthAndSubscription();
+  const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    console.log("onAuthStateChange event:", event);
+    console.log("Текущая сессия:", session);
+  });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("onAuthStateChange event:", event);
-      console.log("Текущая сессия:", session);
-      
-    });
+  return () => {
+    if (listener?.subscription) {
+      listener.subscription.unsubscribe();
+    }
+  };
+}, [router, supabase]);
 
-    return () => subscription.unsubscribe();
-  }, [router, supabase]);
 
   // ... остальная логика и JSX без изменений
 
