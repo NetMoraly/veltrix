@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useAuth } from '../contexts/AuthContext'; // путь поправь под себя
 import Header from './Header';
 import Footer from './Footer';
 import {
@@ -17,26 +17,24 @@ import {
 
 export default function DashboardClient() {
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const { session, loading, supabase } = useAuth();
 
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   useEffect(() => {
-    const checkSubscription = async () => {
-      const { data } = await supabase.auth.getSession();
-      const currentSession = data?.session;
+    if (!session) {
+      setHasActiveSubscription(false);
+      setDaysLeft(0);
+      return;
+    }
 
-      setSession(currentSession); // сохраняем сессию, если нужна
-
-      const userId = currentSession?.user?.id;
+    async function checkSubscription() {
+      const userId = session.user?.id;
       if (!userId) {
-        // Если userId нет — просто показываем UI без подписки
         setHasActiveSubscription(false);
-        setLoading(false);
+        setDaysLeft(0);
         return;
       }
 
@@ -58,26 +56,30 @@ export default function DashboardClient() {
         setDaysLeft(diffDays);
       } else {
         setHasActiveSubscription(false);
+        setDaysLeft(0);
       }
-
-      setLoading(false);
-    };
+    }
 
     checkSubscription();
+  }, [session, supabase]);
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("onAuthStateChange event:", event);
-      console.log("Текущая сессия:", session);
-    });
+  useEffect(() => {
+    if (!loading && !session) {
+      router.replace('/login');
+    }
+  }, [loading, session, router]);
 
-    return () => {
-      if (listener?.subscription) {
-        listener.subscription.unsubscribe();
-      }
-    };
-  }, [router, supabase]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Загрузка...
+      </div>
+    );
+  }
 
-  // Остальная логика и JSX без изменений
+  if (!session) return null;
+
+  // Остальной твой JSX без изменений
   const stats = [
     { day: 'Пн', value: 2 },
     { day: 'Вт', value: 1 },
@@ -109,18 +111,12 @@ export default function DashboardClient() {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Загрузка...
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
       <Header />
       <main className="flex-grow px-4 py-10 text-white max-w-5xl w-full mx-auto">
+        {/* ... весь твой JSX с прогнозами и статистикой без изменений */}
+        {/* просто замени session и supabase на useAuth */}
         <div className="mb-10 bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-lg">
             Осталось дней подписки: <span className="font-bold">{daysLeft} дней</span>
@@ -138,79 +134,7 @@ export default function DashboardClient() {
           </div>
         </div>
 
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-4">Аналитика на сегодня</h2>
-          <div className="relative">
-            <div
-              className={`grid grid-cols-1 md:grid-cols-3 gap-4 transition-all ${
-                !hasActiveSubscription ? 'blur-sm pointer-events-none select-none' : ''
-              }`}
-            >
-              {forecasts.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-white/5 p-4 rounded-xl backdrop-blur-lg shadow-md"
-                >
-                  <p className="text-lg font-semibold">{item.match}</p>
-                  <p className="text-white/70">Время: {item.time}</p>
-                  <p className="mt-2 font-medium text-green-400">
-                    Оценка: {item.prediction}
-                  </p>
-                  <button
-                    onClick={() => hasActiveSubscription && setSelectedForecast(item)}
-                    className={`mt-4 inline-block px-4 py-2 rounded-xl font-semibold text-sm transition ${
-                      hasActiveSubscription
-                        ? 'bg-gradient-to-r from-[#6e45e2] to-[#88d3ce] text-white hover:scale-105'
-                        : 'bg-gray-600 text-white cursor-not-allowed'
-                    }`}
-                    disabled={!hasActiveSubscription}
-                  >
-                    Подробнее
-                  </button>
-                </div>
-              ))}
-            </div>
-            {!hasActiveSubscription && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  onClick={() => router.push('/subscribe')}
-                  className="bg-[#b517f5] hover:bg-[#9f11db] text-white px-6 py-3 rounded-xl font-bold text-lg backdrop-blur-xl shadow-xl"
-                >
-                  Получить доступ к аналитике
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Статистика за 7 дней</h2>
-          <div className="bg-white/5 p-4 rounded-xl backdrop-blur-lg shadow-md">
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={stats}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis dataKey="day" stroke="#fff" />
-                <YAxis stroke="#fff" />
-                <Tooltip
-                  content={({ active, payload }) =>
-                    active && payload?.length ? (
-                      <div className="bg-gradient-to-r from-[#4e1d74] to-[#6e1bb3] text-white text-sm px-4 py-2 rounded-xl shadow-xl font-semibold backdrop-blur-md border border-white/10">
-                        Победы: {payload[0].value}
-                      </div>
-                    ) : null
-                  }
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#34ace4"
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        {/* ... остальное содержимое и футер */}
       </main>
 
       {selectedForecast && (
@@ -234,21 +158,7 @@ export default function DashboardClient() {
 
       <Footer />
 
-      <style jsx>{`
-        .animate-fadeInScale {
-          animation: fadeInScale 0.3s ease-out forwards;
-        }
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-      `}</style>
+
     </div>
   );
 

@@ -6,7 +6,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-
 export default function SubscribePage() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
@@ -14,26 +13,30 @@ export default function SubscribePage() {
   const [animateModal, setAnimateModal] = useState(false);
   const supabase = createClientComponentClient();
 
-
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const handleSubscribeClick = async (link) => {
-  const { data } = await supabase.auth.getSession();
-  const session = data?.session;
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
 
-  if (session?.user?.id) {
-    window.location.href = link;
-  } else {
-    setShowModal(true);
-    setTimeout(() => setAnimateModal(true), 10);
-  }
-};
+    if (session?.user?.id) {
+      window.location.href = link;
+    } else {
+      setShowModal(true);
+      setTimeout(() => setAnimateModal(true), 10);
+    }
+  };
 
+  const handleModalClose = () => {
+    setAnimateModal(false);
+    setTimeout(() => setShowModal(false), 200);
+  };
 
-
-
+  const handleModalConfirm = () => {
+    router.push("/login");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
@@ -52,8 +55,9 @@ export default function SubscribePage() {
           <div className="bg-white/5 backdrop-blur-xl p-6 rounded-xl shadow-xl flex flex-col items-center text-white">
             <p className="text-xl font-semibold mb-2">7 дней — 999₽</p>
             <p className="text-sm text-white/60 mb-4 text-center">
-              Доступ к закрытому AI-контенту: ежедневно 3 аналитических разбора событий на основе
-              открытых данных. Вся информация — прямо в вашем личном кабинете на сайте или в боте.
+              Доступ к закрытому AI-контенту: ежедневно 3 аналитических разбора
+              событий на основе открытых данных. Вся информация — прямо в вашем
+              личном кабинете на сайте или в боте.
             </p>
             <button
               onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
@@ -80,18 +84,19 @@ export default function SubscribePage() {
         </div>
 
         <p className="text-white/50 mt-10 text-sm text-center max-w-md">
-          После оплаты вы получите доступ к аналитике спортивных событий на срок действия подписки.
+          После оплаты вы получите доступ к аналитике спортивных событий на срок
+          действия подписки.
         </p>
       </div>
 
       {/* 🔹 Блок платёжных иконок */}
-<div className="mt-8 flex flex-wrap gap-5 justify-center items-center opacity-80">
-  <img src="/mir.svg" alt="МИР" className="h-12" />
-  <img src="/mastercard.svg" alt="Mastercard" className="h-12" />
-  <img src="/visa.svg" alt="Visa" className="h-10" />
-  <img src="/crypto.svg" alt="Криптовалюта" className="h-10" />
-  <img src="/sbp.svg" alt="СБП" className="h-10" />
-</div>
+      <div className="mt-8 flex flex-wrap gap-5 justify-center items-center opacity-80">
+        <img src="/mir.svg" alt="МИР" className="h-12" />
+        <img src="/mastercard.svg" alt="Mastercard" className="h-12" />
+        <img src="/visa.svg" alt="Visa" className="h-10" />
+        <img src="/crypto.svg" alt="Криптовалюта" className="h-10" />
+        <img src="/sbp.svg" alt="СБП" className="h-10" />
+      </div>
 
       <Footer />
 

@@ -1,71 +1,27 @@
 'use client';
 
-import { useEffect, useState, ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import * as jwtDecode from 'jwt-decode';
+import { useAuth } from 'contexts/AuthContext';
 
-const MAX_SESSION_DURATION = 2 * 60 * 60; // 2 часа в секундах
 
-interface JwtPayload {
-  iat: number;
-  exp: number;
-  [key: string]: any;
-}
+
+
+
 
 export default function RouteGuard({ children }: { children: ReactNode }) {
+  const { authenticated, loading } = useAuth();
+  
+  
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  
 
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    async function checkSession() {
-      const { data } = await supabase.auth.getSession();
-      const session = data?.session;
-
-      if (!session) {
-        router.push('/login');
-        setAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const token = session.access_token;
-        const decoded = (jwtDecode as any).default(token);
-
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        if (decoded.exp < currentTime) {
-          await supabase.auth.signOut();
-          router.push('/login');
-          setAuthenticated(false);
-          setLoading(false);
-          return;
-        }
-
-        if (currentTime - decoded.iat > MAX_SESSION_DURATION) {
-          await supabase.auth.signOut();
-          router.push('/login');
-          setAuthenticated(false);
-          setLoading(false);
-          return;
-        }
-
-        setAuthenticated(true);
-      } catch (error) {
-        await supabase.auth.signOut();
-        router.push('/login');
-        setAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
+    if (!loading && !authenticated) {
+      router.replace('/login');
     }
-
-    checkSession();
-  }, [router, supabase]);
+  }, [loading, authenticated, router]);
 
   if (loading) {
     return (

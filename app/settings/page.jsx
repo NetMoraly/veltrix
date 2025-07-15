@@ -3,16 +3,13 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import RouteGuard from '../components/RouteGuard'; 
+import RouteGuard from '../components/RouteGuard';
 
 export default function SettingsPage() {
-
-
 
   const [telegramUsername, setTelegramUsername] = useState('');
   const [isBound, setIsBound] = useState(false);
 
-  
   const handleBind = () => {
     if (telegramUsername.trim()) {
       setIsBound(true);
@@ -48,8 +45,7 @@ export default function SettingsPage() {
 
           {/* Telegram блок */}
           <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-xl">
-            <h2 className="text-xl font-semibold mb-4">Привязка Telegram</h2>
-
+          
             {isBound ? (
               <div className="text-green-400 font-medium">
                 Telegram успешно привязан: <span className="underline">@{telegramUsername}</span>
@@ -79,6 +75,8 @@ export default function SettingsPage() {
       </div>
     </RouteGuard>
   );
+
+
 }
 
 
