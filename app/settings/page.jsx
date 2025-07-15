@@ -2,19 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export default function SettingsPage() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
+
   const [telegramUsername, setTelegramUsername] = useState('');
   const [isBound, setIsBound] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('token');
-    if (!isLoggedIn) {
-      router.push('/login');
-    }
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const session = data?.session;
+      if (!session?.user?.id) {
+        router.push('/login');
+      }
+    };
+
+    checkSession();
   }, [router]);
 
   const handleBind = () => {

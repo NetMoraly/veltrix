@@ -4,37 +4,36 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 
 export default function SubscribePage() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [animateModal, setAnimateModal] = useState(false);
+  const supabase = createClientComponentClient();
+
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleSubscribeClick = (link) => {
-    const token = localStorage.getItem("token");
+  const handleSubscribeClick = async (link) => {
+  const { data } = await supabase.auth.getSession();
+  const session = data?.session;
 
-    if (token) {
-      window.location.href = link;
-    } else {
-      setShowModal(true);
-      setTimeout(() => setAnimateModal(true), 10);
-    }
-  };
+  if (session?.user?.id) {
+    window.location.href = link;
+  } else {
+    setShowModal(true);
+    setTimeout(() => setAnimateModal(true), 10);
+  }
+};
 
-  const handleModalClose = () => {
-    setAnimateModal(false);
-    setTimeout(() => setShowModal(false), 200);
-  };
 
-  const handleModalConfirm = () => {
-    handleModalClose();
-    router.push("/login");
-  };
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">

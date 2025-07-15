@@ -2,16 +2,28 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import BrandLogo from "./BrandLogo";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (data?.session?.user?.id) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setLoading(false);
+    };
+
+    checkSession();
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -21,13 +33,15 @@ export default function Header() {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [supabase]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
     window.location.href = "/";
   };
+
+  if (loading) return null;
 
   return (
     <header className="w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-md">
