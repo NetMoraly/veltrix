@@ -28,10 +28,7 @@ export default function RegisterPage() {
     hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
   };
 
-  const handleTelegramRegister = () => {
-    setTelegramLoading(true);
-    window.location.href = `https://oauth.telegram.org/auth?bot_id=${process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID}&origin=${encodeURIComponent(window.location.origin)}&embed=1&request_access=write&return_to=${encodeURIComponent('/dashboard')}`;
-  };
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -165,21 +162,7 @@ export default function RegisterPage() {
               </button>
             </form>
 
-            <div className="mt-4">
-              <button
-                onClick={handleTelegramRegister}
-                disabled={telegramLoading}
-                className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
-              >
-                <Image
-                  src="/plane.png"
-                  alt="Telegram Icon"
-                  width={20}
-                  height={20}
-                />
-                {telegramLoading ? 'Регистрация через Telegram...' : 'Зарегистрироваться через Telegram'}
-              </button>
-            </div>
+  
 
             <p className="text-sm text-white/60 text-center mt-4">
               Уже есть аккаунт?{' '}

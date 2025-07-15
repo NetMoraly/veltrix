@@ -69,11 +69,7 @@ useEffect(() => {
 
 
 
-  const handleTelegramLogin = () => {
-    setTelegramLoading(true);
-    // Простой и надежный редирект
-    window.location.href = `https://oauth.telegram.org/auth?bot_id=${process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID}&origin=${encodeURIComponent(window.location.origin)}&embed=1&request_access=write&return_to=${encodeURIComponent('/dashboard')}`;
-  };
+
 
   return (
     <>
@@ -123,16 +119,7 @@ useEffect(() => {
               </button>
             </form>
 
-             <div className="mt-3">
-          <button
-            onClick={handleTelegramLogin}
-            disabled={telegramLoading}
-            className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
-          >
-            <Image src="/plane.png" alt="Telegram Icon" width={20} height={20} />
-            {telegramLoading ? "Вход через Telegram..." : "Войти через Telegram"}
-          </button>
-        </div>
+  
 
 
             <div className="mt-4 text-sm text-white/60 text-center space-y-2">
