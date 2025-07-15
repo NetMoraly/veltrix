@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import Image from "next/image";
-
+import GoogleButton from '../components/GoogleButton'; // убедись, что путь правильный
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,51 +25,54 @@ export default function LoginPage() {
 
   const supabase = createClientComponentClient();
 
-
-useEffect(() => {
-  const checkSession = async () => {
-    const { data } = await supabase.auth.getSession();
-    if (data?.session) {
-      router.push('/dashboard');
-    }
-  };
-  checkSession();
-}, [router, supabase]);
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        router.push('/dashboard');
+      }
+    };
+    checkSession();
+  }, [router, supabase]);
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!email || !password) {
-    setToastMessage("Введите email и пароль");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-
-    // 🔒 Ждём реального появления сессии
-    const { data: sessionData } = await supabase.auth.getSession();
-
-    if (sessionData.session) {
-      router.push("/dashboard");
-    } else {
-      setToastMessage("Ошибка авторизации. Попробуйте ещё раз.");
+    if (!email || !password) {
+      setToastMessage("Введите email и пароль");
+      return;
     }
 
-  } catch (error) {
-    setToastMessage(error.message || "Неверный логин или пароль");
-  } finally {
-    setLoading(false);
-  }
+    setLoading(true);
 
-};
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
 
+      // 🔒 Ждём реального появления сессии
+      const { data: sessionData } = await supabase.auth.getSession();
 
+      if (sessionData.session) {
+        router.push("/dashboard");
+      } else {
+        setToastMessage("Ошибка авторизации. Попробуйте ещё раз.");
+      }
 
+    } catch (error) {
+      setToastMessage(error.message || "Неверный логин или пароль");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) {
+      alert('Ошибка входа через Google: ' + error.message);
+    }
+  };
 
   return (
     <>
@@ -119,8 +122,16 @@ useEffect(() => {
               </button>
             </form>
 
-  
-
+            {/* Кнопка входа через Google */}
+            <div className="mt-6">
+              <GoogleButton
+                onClick={handleGoogleLogin}
+                iconSrc="/google-icon.svg"
+                iconAlt="Google Icon"
+              >
+                Войти через Google
+              </GoogleButton>
+            </div>
 
             <div className="mt-4 text-sm text-white/60 text-center space-y-2">
               <p>
@@ -137,7 +148,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-
+        
 
         <div className="mt-15">
           <Footer />
@@ -149,13 +160,4 @@ useEffect(() => {
       )}
     </>
   );
-  
 }
-
-
-
-
-
-
-
-
