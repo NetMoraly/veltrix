@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../contexts/AuthContext'; // путь поправь под себя
+import { useAuth } from 'contexts/AuthContext';
 import Header from './Header';
 import Footer from './Footer';
 import {
