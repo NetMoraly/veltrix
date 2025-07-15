@@ -6,6 +6,7 @@ import Toast from "../components/Toast";
 import Footer from "../components/Footer";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
@@ -24,6 +25,16 @@ export default function LoginPage() {
 
   const supabase = createClientComponentClient();
 
+
+useEffect(() => {
+  const checkSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session) {
+      router.push('/dashboard');
+    }
+  };
+  checkSession();
+}, [router, supabase]);
 
   const handleLogin = async (e) => {
   e.preventDefault();
