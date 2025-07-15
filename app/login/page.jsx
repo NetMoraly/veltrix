@@ -4,8 +4,8 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Toast from "../components/Toast";
 import Footer from "../components/Footer";
-import { useState, useEffect, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
@@ -21,74 +21,9 @@ export default function LoginPage() {
   const [toastMessage, setToastMessage] = useState('');
 
   const router = useRouter();
-  const pathname = usePathname();
+
   const supabase = createClientComponentClient();
-  const telegramButtonRef = useRef(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.onTelegramAuth = async (user) => {
-        setTelegramLoading(true);
-
-        try {
-
-          const response = await fetch('/api/auth/telegram', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user),
-          });
-
-          if (!response.ok) throw new Error('Ошибка авторизации');
-          router.push("/dashboard");
-        } catch (error) {
-
-          setToastMessage(error.message || "Ошибка входа через Telegram");
-        } finally {
-          setTelegramLoading(false);
-        }
-      };
-
-      const loadTelegramWidget = () => {
-        const existing = document.querySelector('script[src*="telegram-widget"]');
-        if (existing) existing.remove();
-
-        const script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-widget.js?7";
-        script.async = true;
-        script.setAttribute("data-telegram-login", "BetLyticBot");
-        script.setAttribute("data-size", "medium");
-        script.setAttribute("data-userpic", "false");
-        script.setAttribute("data-lang", "ru");
-        script.setAttribute("data-request-access", "write");
-        script.setAttribute("data-onauth", "onTelegramAuth(user)");
-        script.setAttribute("data-auth-url", `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`);
-        script.onerror = () => setToastMessage("Не удалось загрузить Telegram Widget");
-
-
-        document.body.appendChild(script);
-      };
-
-
-      const handleTelegramClick = () => {
-        const widget = document.querySelector('.telegram-login-button');
-        if (widget) {
-          widget.click();
-        } else {
-          loadTelegramWidget();
-        }
-      };
-
-      if (telegramButtonRef.current) {
-        telegramButtonRef.current.addEventListener('click', handleTelegramClick);
-      }
-
-      return () => {
-        if (telegramButtonRef.current) {
-          telegramButtonRef.current.removeEventListener('click', handleTelegramClick);
-        }
-      };
-    }
-  }, [pathname, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -101,11 +36,11 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
       if (error) throw error;
-      if (!data.session?.user?.email_confirmed_at) {
-        throw new Error("Подтвердите email перед входом");
-      }
+      
 
       router.push("/dashboard");
     } catch (error) {
@@ -113,6 +48,12 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTelegramLogin = () => {
+    setTelegramLoading(true);
+    // Простой и надежный редирект
+    window.location.href = `https://oauth.telegram.org/auth?bot_id=${process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID}&origin=${encodeURIComponent(window.location.origin)}&embed=1&request_access=write&return_to=${encodeURIComponent('/dashboard')}`;
   };
 
   return (
@@ -163,31 +104,17 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-3">
-              <button
-                ref={telegramButtonRef}
-                type="button"
-                className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
-                disabled={telegramLoading}
-              >
-                <Image
-                  src="/plane.png"
-                  alt="Telegram Icon"
-                  width={20}
-                  height={20}
-                />
-                {telegramLoading ? "Вход через Telegram..." : "Войти через Telegram"}
-              </button>
-              <div
-                className="telegram-login-button"
-                style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
-                data-telegram-login="BetLyticBot"
-                data-size="medium"
-                data-userpic="false"
-                data-onauth="onTelegramAuth(user)"
-                data-auth-url={`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/telegram`}
-              />
-            </div>
+             <div className="mt-3">
+          <button
+            onClick={handleTelegramLogin}
+            disabled={telegramLoading}
+            className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition relative cursor-pointer"
+          >
+            <Image src="/plane.png" alt="Telegram Icon" width={20} height={20} />
+            {telegramLoading ? "Вход через Telegram..." : "Войти через Telegram"}
+          </button>
+        </div>
+
 
             <div className="mt-4 text-sm text-white/60 text-center space-y-2">
               <p>
