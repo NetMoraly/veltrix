@@ -39,9 +39,14 @@ export default function RegisterPage() {
 
     try {
       if (password !== repeatPassword) {
-
+        
         setToastMessage('Пароли не совпадают');
 
+        return;
+      }
+
+      if (!passwordValidations.minLength || !passwordValidations.hasUppercase || !passwordValidations.hasSymbol) {
+        setToastMessage('Пароль не соответствует требованиям');
         return;
       }
 
@@ -56,7 +61,7 @@ export default function RegisterPage() {
       }
 
       const { exists } = await checkResponse.json();
-      
+
       if (exists) {
 
         throw new Error('Этот email уже зарегистрирован');
@@ -94,7 +99,62 @@ export default function RegisterPage() {
             <h2 className="text-2xl font-bold text-center mb-6">Регистрация</h2>
 
             <form className="space-y-4" onSubmit={handleRegister}>
-              {/* ... ваши поля email и пароля без изменений ... */}
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                required
+              />
+
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                >
+                  {showPassword ? 'Скрыть' : 'Показать'}
+                </button>
+              </div>
+
+              <p className="text-sm mt-1 pl-1">
+                <span className={passwordValidations.minLength ? 'text-green-400' : 'text-white/60'}>
+                  Не менее 8 символов
+                </span>,{' '}
+                <span className={passwordValidations.hasUppercase ? 'text-green-400' : 'text-white/60'}>
+                  1 заглавная буква
+                </span>,{' '}
+                <span className={passwordValidations.hasSymbol ? 'text-green-400' : 'text-white/60'}>
+                  1 спецсимвол
+                </span>
+              </p>
+
+              <div className="relative">
+                <input
+                  type={showRepeatPassword ? 'text' : 'password'}
+                  placeholder="Повторите пароль"
+                  value={repeatPassword}
+                  onChange={(e) => setRepeatPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                >
+                  {showRepeatPassword ? 'Скрыть' : 'Показать'}
+                </button>
+              </div>
 
               <button
                 type="submit"
@@ -140,4 +200,5 @@ export default function RegisterPage() {
       )}
     </>
   );
+
 }
