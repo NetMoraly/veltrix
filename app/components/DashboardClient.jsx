@@ -19,23 +19,30 @@ export default function DashboardClient() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
+    const [loading, setLoading] = useState(true);
+const [session, setSession] = useState(null);
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
-  useEffect(() => {
+
+
+ useEffect(() => {
   const checkAuthAndSubscription = async () => {
     const {
       data: { session },
       error: sessionError,
     } = await supabase.auth.getSession();
 
-    console.log('session', session);
+    console.log('Supabase session check:', session); // 👈 добавлен лог
+
     if (!session) {
       console.warn('Нет сессии, редирект на логин', sessionError);
       router.push('/login');
       return;
     }
+
+    setSession(session); // 👈 сохраняем сессию в state
 
     const { data: subscription, error: subError } = await supabase
       .from('subscriptions')
@@ -57,6 +64,8 @@ export default function DashboardClient() {
       console.warn('Нет активной подписки или она истекла', subError);
       setHasActiveSubscription(false);
     }
+
+    setLoading(false); // ✅ завершаем загрузку
   };
 
   checkAuthAndSubscription();
@@ -93,6 +102,14 @@ export default function DashboardClient() {
       analysis: 'Обе команды стабильно забивают, но плохо защищаются...',
     },
   ];
+  
+if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      Загрузка...
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">

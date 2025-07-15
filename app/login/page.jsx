@@ -26,29 +26,35 @@ export default function LoginPage() {
 
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!email || !password) {
-      setToastMessage("Введите email и пароль");
-      return;
-    }
+  if (!email || !password) {
+    setToastMessage("Введите email и пароль");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
 
-      if (error) throw error;
-      
+    // 🔒 Ждём реального появления сессии
+    const { data: sessionData } = await supabase.auth.getSession();
 
+    if (sessionData.session) {
       router.push("/dashboard");
-    } catch (error) {
-      setToastMessage(error.message || "Неверный логин или пароль");
-    } finally {
-      setLoading(false);
+    } else {
+      setToastMessage("Ошибка авторизации. Попробуйте ещё раз.");
     }
-  };
+
+  } catch (error) {
+    setToastMessage(error.message || "Неверный логин или пароль");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleTelegramLogin = () => {
     setTelegramLoading(true);
