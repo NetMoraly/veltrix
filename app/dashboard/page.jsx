@@ -1,12 +1,13 @@
 import dynamic from 'next/dynamic';
 
-// Динамически загружаем клиентскую часть
-const DashboardClientWrapper = dynamic(() => import('../components/DashboardClient'), {
+// ✅ Динамический импорт, отключающий SSR
+const DashboardWrapper = dynamic(() => import('../components/wrappers/DashboardWrapper'), {
   ssr: false,
 });
 
 export default function DashboardPage() {
-  return <DashboardClient />;
+  return <DashboardWrapper />;
 }
+
 
 
