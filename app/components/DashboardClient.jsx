@@ -27,41 +27,45 @@ export default function DashboardClient() {
 
   useEffect(() => {
     const checkAuthAndSubscription = async () => {
-      const { data, error: sessionError } = await supabase.auth.getSession();
+  const { data, error: sessionError } = await supabase.auth.getSession();
 
-      console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
+  console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
 
-      if (!data.session) {
-        console.warn('Нет сессии, редирект на логин', sessionError);
-        router.push('/login');
-        return;
-      }
+  if (!data.session) {
+    console.warn('Нет сессии, редирект на логин', sessionError);
+    router.push('/login');
+    return;
+  }
 
-      setSession(data.session);
+  setSession(data.session); // сохраняем сессию
 
-      const { data: subscription, error: subError } = await supabase
-        .from('subscriptions')
-        .select('subscription_active, subscription_expires_at')
-        .eq('user_id', data.session.user.id)   // Используем data.session.user.id
-        .eq('subscription_active', true)
-        .single();
+  // Используем user id напрямую из data.session.user
+  const userId = data.session.user.id;
 
-      if (subscription && subscription.subscription_expires_at) {
-        setHasActiveSubscription(true);
+  const { data: subscription, error: subError } = await supabase
+    .from('subscriptions')
+    .select('subscription_active, subscription_expires_at')
+    .eq('user_id', userId)
+    .eq('subscription_active', true)
+    .single();
 
-        const now = new Date();
-        const expires = new Date(subscription.subscription_expires_at);
-        const diffMs = expires - now;
-        const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  if (subscription && subscription.subscription_expires_at) {
+    setHasActiveSubscription(true);
 
-        setDaysLeft(diffDays);
-      } else {
-        console.warn('Нет активной подписки или она истекла', subError);
-        setHasActiveSubscription(false);
-      }
+    const now = new Date();
+    const expires = new Date(subscription.subscription_expires_at);
+    const diffMs = expires - now;
+    const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 
-      setLoading(false);
-    };
+    setDaysLeft(diffDays);
+  } else {
+    console.warn('Нет активной подписки или она истекла', subError);
+    setHasActiveSubscription(false);
+  }
+
+  setLoading(false);
+};
+
 
     checkAuthAndSubscription();
 
