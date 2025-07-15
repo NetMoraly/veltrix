@@ -177,7 +177,7 @@ const handleGoogleRegister = async () => {
             </form>
 
             {/* Вот кнопка Google, ниже формы */}
-            <div className="mt-6">
+            <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleRegister}
                 iconSrc="/google-icon.svg"

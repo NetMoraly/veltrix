@@ -65,7 +65,7 @@ export default function LoginPage() {
     }
   };
 
- const handleGoogleRegister = async () => {
+ const handleGoogleLogin = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -127,7 +127,7 @@ export default function LoginPage() {
             </form>
 
             {/* Кнопка входа через Google */}
-            <div className="mt-6">
+            <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleLogin}
                 iconSrc="/google-icon.svg"
