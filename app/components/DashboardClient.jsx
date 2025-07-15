@@ -27,22 +27,19 @@ const [session, setSession] = useState(null);
 
 
 
- useEffect(() => {
+useEffect(() => {
   const checkAuthAndSubscription = async () => {
-    const {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
+    const { data, error: sessionError } = await supabase.auth.getSession();
 
-    console.log('Supabase session check:', session); // 👈 добавлен лог
+    console.log("Полные данные getSession():", data, "Ошибка:", sessionError);
 
-    if (!session) {
+    if (!data.session) {
       console.warn('Нет сессии, редирект на логин', sessionError);
       router.push('/login');
       return;
     }
 
-    setSession(session); // 👈 сохраняем сессию в state
+    setSession(data.session);// 👈 сохраняем сессию в state
 
     const { data: subscription, error: subError } = await supabase
       .from('subscriptions')
@@ -68,7 +65,16 @@ const [session, setSession] = useState(null);
     setLoading(false); // ✅ завершаем загрузку
   };
 
-  checkAuthAndSubscription();
+ checkAuthAndSubscription();
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((event, session) => {
+    console.log("onAuthStateChange event:", event);
+    console.log("Текущая сессия:", session);
+  });
+
+  return () => subscription.unsubscribe();
 }, [router, supabase]);
 
 
@@ -102,7 +108,7 @@ const [session, setSession] = useState(null);
       analysis: 'Обе команды стабильно забивают, но плохо защищаются...',
     },
   ];
-  
+
 if (loading) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
