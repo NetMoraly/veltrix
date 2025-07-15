@@ -1,23 +1,34 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push("/login?verified=true");
-    }, 2000);
+    async function checkSession() {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
-    return () => clearTimeout(timer);
-  }, [router]);
+      if (session) {
+        // Пользователь залогинен — редирект на дашборд
+        router.replace('/dashboard');
+      } else {
+        // Нет сессии — редирект на логин
+        router.replace('/login');
+      }
+    }
+    checkSession();
+  }, [router, supabase]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white text-xl font-semibold">
-      Подтверждение успешно! Перенаправляем на страницу входа...
+      Проверяем сессию и перенаправляем...
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 import Link from 'next/link';
 import Toast from '../components/Toast';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import GoogleButton from '../components/GoogleButton';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ export default function RegisterPage() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [telegramLoading, setTelegramLoading] = useState(false);
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
@@ -28,7 +29,14 @@ export default function RegisterPage() {
     hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
   };
 
-
+  const handleGoogleRegister = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) {
+      alert('Ошибка регистрации через Google: ' + error.message);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -36,14 +44,15 @@ export default function RegisterPage() {
 
     try {
       if (password !== repeatPassword) {
-        
-        setToastMessage('Пароли не совпадают');
 
+        setToastMessage('Пароли не совпадают');
+        setLoading(false);
         return;
       }
 
       if (!passwordValidations.minLength || !passwordValidations.hasUppercase || !passwordValidations.hasSymbol) {
         setToastMessage('Пароль не соответствует требованиям');
+        setLoading(false);
         return;
       }
 
@@ -62,6 +71,7 @@ export default function RegisterPage() {
       if (exists) {
 
         throw new Error('Этот email уже зарегистрирован');
+
       }
 
       const { error } = await supabase.auth.signUp({
@@ -162,7 +172,16 @@ export default function RegisterPage() {
               </button>
             </form>
 
-  
+            {/* Вот кнопка Google, ниже формы */}
+            <div className="mt-6">
+              <GoogleButton
+                onClick={handleGoogleRegister}
+                iconSrc="/google-icon.svg"
+                iconAlt="Google Icon"
+              >
+                Зарегистрироваться через Google
+              </GoogleButton>
+            </div>
 
             <p className="text-sm text-white/60 text-center mt-4">
               Уже есть аккаунт?{' '}
