@@ -9,21 +9,28 @@ export default function AuthCallbackPage() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    async function checkSession() {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
+    async function checkSessionWithRetry() {
+      let attempts = 0;
 
-      if (session) {
-        // Пользователь залогинен — редирект на дашборд
-        router.replace('/dashboard');
-      } else {
-        // Нет сессии — редирект на логин
-        router.replace('/login');
+      while (attempts < 5) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session) {
+          router.replace('/dashboard');
+          return;
+        }
+
+        attempts++;
+        await new Promise((res) => setTimeout(res, 600)); // 0.6 секунды задержка
       }
+
+      // Не удалось получить сессию — редирект на логин
+      router.replace('/login');
     }
-    checkSession();
+
+    checkSessionWithRetry();
   }, [router, supabase]);
 
   return (
@@ -32,3 +39,4 @@ export default function AuthCallbackPage() {
     </div>
   );
 }
+
