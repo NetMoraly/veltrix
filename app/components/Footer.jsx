@@ -1,6 +1,7 @@
-import Image from "next/image";
+
 import Link from "next/link";
-<Image src="/logo.png" width={100} height={100} alt="Logo" />
+
+import BrandLogo from "./BrandLogo";
 
 export default function Footer() {
   return (
@@ -9,10 +10,7 @@ export default function Footer() {
         
         {/* Колонка: Логотип и копирайт */}
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <Image src={logo} alt="Veltrix Logo" width={36} height={36} />
-            <span className="text-xl font-semibold tracking-tight">Veltrix</span>
-          </div>
+          <BrandLogo size={36} />
           <p className="text-sm text-white/60 leading-relaxed">
             ©2025 Veltrix <br />
             Все права защищены
