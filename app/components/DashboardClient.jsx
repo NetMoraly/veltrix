@@ -24,6 +24,7 @@ export default function DashboardClient() {
   const [showFullHistory, setShowFullHistory] = useState(false);
   const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false); // новое состояние
 
   useEffect(() => {
     if (!session) {
@@ -163,12 +164,12 @@ export default function DashboardClient() {
             Осталось дней подписки: <span className="font-bold">{daysLeft} дней</span>
           </div>
           <div className="flex gap-4">
-            <button className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-2 rounded-xl font-semibold hover:scale-105 transition">
+            <button className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer">
               Продлить
             </button>
             <button
-              onClick={() => router.push('/settings')}
-              className="bg-white/10 border border-white/20 px-5 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition"
+              onClick={() => setShowSettingsModal(true)}
+              className="bg-white/10 border border-white/20 px-5 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
             >
               Настройки профиля
             </button>
@@ -190,7 +191,7 @@ export default function DashboardClient() {
                 </div>
                 <button
                   onClick={() => setSelectedForecast(forecast)}
-                  className="mt-4 self-start bg-gradient-to-r from-[#b44cff] to-[#34ace4] px-5 py-2 rounded-xl font-semibold hover:scale-105 transition"
+                  className="mt-4 self-start bg-gradient-to-r from-[#b44cff] to-[#34ace4] px-5 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
                   type="button"
                 >
                   Подробнее
@@ -270,7 +271,7 @@ export default function DashboardClient() {
 
           <button
             onClick={() => setShowFullHistory(true)}
-            className="mt-6 px-5 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white rounded-xl font-semibold hover:scale-105 transition"
+            className="mt-6 px-5 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
             type="button"
           >
             Показать полную таблицу
@@ -300,7 +301,7 @@ export default function DashboardClient() {
               href="https://t.me/your_bot_username"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-auto block text-center bg-gradient-to-r from-[#b44cff] to-[#34ace4] py-3 rounded-xl font-semibold text-white hover:scale-105 transition"
+              className="mt-auto block text-center bg-gradient-to-r from-[#b44cff] to-[#34ace4] py-3 rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
               aria-label="Решение модели по событию"
             >
               Решение модели по событию
@@ -377,12 +378,60 @@ export default function DashboardClient() {
         </div>
       )}
 
+      {/* Модалка настроек */}
+      {showSettingsModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowSettingsModal(false);
+          }}
+        >
+          <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-8 rounded-2xl shadow-2xl max-w-lg w-full relative flex flex-col">
+            <button
+              onClick={() => setShowSettingsModal(false)}
+              className="absolute top-4 right-4 text-white/70 hover:text-white text-xl transition transform hover:scale-125 cursor-pointer"
+              aria-label="Закрыть"
+            >
+              ✕
+            </button>
+            <h3 className="text-2xl font-bold mb-6">Настройки профиля</h3>
+            {/* Здесь будут поля для настроек профиля */}
+            <div className="flex-grow">
+              <label className="block mb-4">
+                <span className="text-white/90">Имя пользователя</span>
+                <input
+                  type="text"
+                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
+                  placeholder="Введите новое имя пользователя"
+                />
+              </label>
+              <label className="block mb-4">
+                <span className="text-white/90">Электронная почта</span>
+                <input
+                  type="email"
+                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
+                  placeholder="Введите новую электронную почту"
+                />
+              </label>
+              <label className="block mb-4">
+                <span className="text-white/90">Пароль</span>
+                <input
+                  type="password"
+                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
+                  placeholder="Введите новый пароль"
+                />
+              </label>
+            </div>
+            <button className="mt-4 bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer">
+              Сохранить изменения
+            </button>
+          </div>
+        </div>
+      )}
+
       <Footer />
-
-
     </div>
   );
-
 }
 
 
