@@ -14,6 +14,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function DashboardClient() {
   const router = useRouter();
@@ -415,7 +416,7 @@ export default function DashboardClient() {
             </button>
             <h3 className="text-2xl font-bold mb-6">Настройки профиля</h3>
             {/* Поле для кода и кнопка Telegram */}
-            <div className="mb-4">
+            <div className="mb-6">
               <span className="block mb-2 text-white/90 font-semibold">Привязка Telegram</span>
               <div className="flex gap-2 items-center">
                 <input
@@ -436,6 +437,11 @@ export default function DashboardClient() {
                 </a>
               </div>
               <p className="text-xs text-white/60 mt-1">Скопируйте код и отправьте его нашему Telegram-боту для привязки аккаунта. Код действует 5 минут.</p>
+            </div>
+            {/* Сброс пароля */}
+            <div className="mb-2">
+              <span className="block mb-2 text-white/90 font-semibold">Сброс пароля</span>
+              <ResetPasswordInline email={session?.user?.email} />
             </div>
           </div>
         </div>
@@ -481,6 +487,55 @@ function generateCodeWithExpiry(forceNew = false) {
     };
   }
   return { code: "------", expired: false };
+}
+
+function ResetPasswordInline({ email }) {
+  const [status, setStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+  const supabase = createClientComponentClient();
+
+  const handleReset = async () => {
+    if (!email) {
+      setStatus('Не удалось определить email пользователя');
+      return;
+    }
+    setLoading(true);
+    setStatus('');
+    const redirectUrl = typeof window !== "undefined"
+      ? `${window.location.origin}/reset-password`
+      : '';
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    if (error) {
+      setStatus('Ошибка: ' + error.message);
+    } else {
+      setStatus('Письмо для сброса пароля отправлено на ' + email);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        type="email"
+        value={email || ''}
+        readOnly
+        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/60"
+      />
+      <button
+        type="button"
+        onClick={handleReset}
+        disabled={loading}
+        className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white py-2 hover:scale-105 transition cursor-pointer disabled:opacity-60"
+      >
+        {loading ? 'Отправка...' : 'Сбросить пароль'}
+      </button>
+      {status && (
+        <span className="text-xs text-white/70">{status}</span>
+      )}
+    </div>
+  );
 }
 
 
