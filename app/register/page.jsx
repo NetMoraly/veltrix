@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -62,12 +63,14 @@ export default function RegisterPage() {
       if (password !== repeatPassword) {
 
         setToastMessage('Пароли не совпадают');
+        setIsError(true);
         setLoading(false);
         return;
       }
 
       if (!passwordValidations.minLength || !passwordValidations.hasUppercase || !passwordValidations.hasSymbol) {
         setToastMessage('Пароль не соответствует требованиям');
+        setIsError(true);
         setLoading(false);
         return;
       }
@@ -94,9 +97,11 @@ export default function RegisterPage() {
       if (error) throw error;
 
       setToastMessage('Подтвердите регистрацию через email');
+      setIsError(false);
 
     } catch (err) {
       setToastMessage(err.message);
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -240,7 +245,11 @@ export default function RegisterPage() {
       </div>
 
       {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} type={isError ? "error" : "success"} />
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage("")}
+          type={isError ? "error" : "success"}
+        />
       )}
     </>
   );
