@@ -196,15 +196,21 @@ export default function DashboardClient() {
             Осталось дней подписки: <span className="font-bold">{daysLeft} дней</span>
           </div>
           <div className="flex gap-4">
-            <button className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer">
-              Продлить
-            </button>
-            <button
-              onClick={() => setShowSettingsModal(true)}
-              className="bg-white/10 border border-white/20 px-5 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
-            >
-              Настройки профиля
-            </button>
+        <div className="flex gap-4">
+  <button
+    onClick={() => router.push('/subscribe')}
+    className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
+  >
+    Продлить
+  </button>
+  <button
+    onClick={() => setShowSettingsModal(true)}
+    className="bg-white/10 border border-white/20 px-5 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
+  >
+    Настройки профиля
+  </button>
+</div>
+
           </div>
         </div>
 <section className="mb-10 relative">
@@ -236,20 +242,21 @@ export default function DashboardClient() {
     ))}
   </div>
 
-  {!hasActiveSubscription && (
-    <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-4 p-6 bg-white/10 backdrop-blur-sm">
-      <p className="text-white text-lg font-semibold text-center max-w-xs">
-        Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
-      </p>
-      <button
-        onClick={() => router.push('/subscribe')}
-        className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
-        type="button"
-      >
-        Купить подписку
-      </button>
-    </div>
-  )}
+{!hasActiveSubscription && (
+  <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-4 p-6 bg-[#1a0033]/60 backdrop-blur-sm shadow-[inset_0_0_40px_rgba(0,0,0,0.3)]">
+    <p className="text-white text-lg font-semibold text-center max-w-xs">
+      Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
+    </p>
+    <button
+      onClick={() => router.push('/subscribe')}
+      className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
+      type="button"
+    >
+      Купить подписку
+    </button>
+  </div>
+)}
+
 </section>
 
 

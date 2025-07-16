@@ -49,37 +49,59 @@ export default function Header({ onOpenProfileSettings }) {
         <BrandLogo />
 
         <nav className="flex items-center gap-6 text-white">
-          <Link href="/#faq" className="hover:text-[#b44cff] transition">FAQ</Link>
-          <Link href="/subscribe" className="hover:text-[#b44cff] transition">Подписка</Link>
-          <Link href="/contacts" className="hover:text-[#b44cff] transition">Контакты</Link>
+          <Link href="/#faq" className="hover:text-[#b44cff] transition">
+            FAQ
+          </Link>
+          <Link href="/subscribe" className="hover:text-[#b44cff] transition">
+            Подписка
+          </Link>
+          <Link href="/contacts" className="hover:text-[#b44cff] transition">
+            Контакты
+          </Link>
 
           {isLoggedIn ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((prev) => !prev)}
                 className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition cursor-pointer"
+                type="button"
               >
                 Личный кабинет
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#2a0145]/90 text-white rounded-xl shadow-xl py-2 z-50 backdrop-blur border border-white/10">
-                  <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 hover:bg-white/10 transition">Профиль</Link>
+                <div className="absolute right-0 mt-2 w-48 bg-[#2a0145]/90 text-white rounded-xl shadow-xl py-2 z-50 backdrop-blur border border-white/10 transition-all duration-200 ease-out">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setDropdownOpen(false)}
+                    className="block px-4 py-2 hover:bg-white/10 transition cursor-pointer"
+                  >
+                    Профиль
+                  </Link>
                   <button
                     onClick={() => {
                       setDropdownOpen(false);
                       onOpenProfileSettings && onOpenProfileSettings();
                     }}
-                    className="block w-full text-left px-4 py-2 hover:bg-white/10 transition"
+                    className="block w-full text-left px-4 py-2 hover:bg-white/10 transition cursor-pointer"
                     type="button"
                   >
                     Настройки
                   </button>
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-white/10 transition">Выйти</button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-white/10 transition cursor-pointer"
+                    type="button"
+                  >
+                    Выйти
+                  </button>
                 </div>
               )}
             </div>
           ) : (
-            <Link href="/login" className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition">
+            <Link
+              href="/login"
+              className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition"
+            >
               Войти
             </Link>
           )}
