@@ -20,6 +20,14 @@ export default function DashboardClient() {
   const router = useRouter();
   const { session, loading, supabase } = useAuth();
 
+  // ⬇️ Добавляем автообновление страницы при каждом заходе
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
+  }, []);
+  // ⬆️
+
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
   const [showFullHistory, setShowFullHistory] = useState(false);
