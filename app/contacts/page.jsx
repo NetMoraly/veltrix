@@ -44,7 +44,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/plane.png" alt="Telegram" className="h-8 w-8 opacity-60" />
+                  <img src="/telegram.svg" alt="Telegram" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@Veltrix_ai</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Официальный Telegram-канал</p>
