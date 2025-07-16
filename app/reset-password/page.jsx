@@ -122,18 +122,46 @@ export default function ResetPasswordPage() {
               </button>
             </div>
 
+            {/* Современный блок требований к паролю */}
             {showPasswordRules && (
-              <ul className="text-sm text-white/80 mb-4 ml-1 space-y-1">
-                <li className={password.length >= 8 ? 'text-green-400' : ''}>
-                  • Не менее 8 символов
-                </li>
-                <li className={/[A-Z]/.test(password) ? 'text-green-400' : ''}>
-                  • Минимум 1 заглавная буква
-                </li>
-                <li className={/[^a-zA-Z0-9]/.test(password) ? 'text-green-400' : ''}>
-                  • Минимум 1 спецсимвол
-                </li>
-              </ul>
+              <div className="flex gap-2 mt-1 mb-4 flex-wrap">
+                <span className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium
+                  ${password.length >= 8 ? "bg-green-500/20 text-green-300" : "bg-white/10 text-white/60"}
+                `}>
+                  <svg width="16" height="16" fill="none" className="inline-block">
+                    {password.length >= 8 ? (
+                      <path d="M4 8.5l3 3 5-5" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    ) : (
+                      <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
+                    )}
+                  </svg>
+                  Не менее 8 символов
+                </span>
+                <span className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium
+                  ${/[A-Z]/.test(password) ? "bg-green-500/20 text-green-300" : "bg-white/10 text-white/60"}
+                `}>
+                  <svg width="16" height="16" fill="none" className="inline-block">
+                    {/[A-Z]/.test(password) ? (
+                      <path d="M4 8.5l3 3 5-5" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    ) : (
+                      <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
+                    )}
+                  </svg>
+                  1 заглавная буква
+                </span>
+                <span className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium
+                  {/[^a-zA-Z0-9]/.test(password) ? "bg-green-500/20 text-green-300" : "bg-white/10 text-white/60"}
+                `}>
+                  <svg width="16" height="16" fill="none" className="inline-block">
+                    {/[^a-zA-Z0-9]/.test(password) ? (
+                      <path d="M4 8.5l3 3 5-5" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    ) : (
+                      <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
+                    )}
+                  </svg>
+                  1 спецсимвол
+                </span>
+              </div>
             )}
 
             <div className="mb-6 relative">

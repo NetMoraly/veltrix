@@ -25,6 +25,64 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
       <Header />
 
+      {/* Глобальная геометрическая анимация */}
+      <div className="fixed inset-0 -z-10 pointer-events-none select-none">
+        {/* SVG blobs */}
+        <svg width="100%" height="100%" viewBox="0 0 1920 1080" className="absolute inset-0 w-full h-full" style={{ minHeight: 700 }}>
+          <defs>
+            <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#b44cff" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#b44cff" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#34ace4" stopOpacity="0.13" />
+              <stop offset="100%" stopColor="#34ace4" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          {/* Blob 1 */}
+          <ellipse
+            cx="400"
+            cy="400"
+            rx="320"
+            ry="180"
+            fill="url(#blob1)"
+          >
+            <animate attributeName="cx" values="400;600;400" dur="12s" repeatCount="indefinite" />
+            <animate attributeName="cy" values="400;600;400" dur="14s" repeatCount="indefinite" />
+          </ellipse>
+          {/* Blob 2 */}
+          <ellipse
+            cx="1500"
+            cy="700"
+            rx="260"
+            ry="140"
+            fill="url(#blob2)"
+          >
+            <animate attributeName="cx" values="1500;1300;1500" dur="13s" repeatCount="indefinite" />
+            <animate attributeName="cy" values="700;900;700" dur="15s" repeatCount="indefinite" />
+          </ellipse>
+          {/* Светящиеся точки */}
+          <circle cx="900" cy="200" r="3">
+            <animate attributeName="cy" values="200;250;200" dur="8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.7;0.2;0.7" dur="8s" repeatCount="indefinite" />
+            <animate attributeName="r" values="3;6;3" dur="8s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="#34ace4;#b44cff;#34ace4" dur="8s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="1200" cy="500" r="2">
+            <animate attributeName="cy" values="500;530;500" dur="7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.5;0.1;0.5" dur="7s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;5;2" dur="7s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="#b44cff;#34ace4;#b44cff" dur="7s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="600" cy="800" r="4">
+            <animate attributeName="cy" values="800;850;800" dur="10s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0.15;0.6" dur="10s" repeatCount="indefinite" />
+            <animate attributeName="r" values="4;8;4" dur="10s" repeatCount="indefinite" />
+            <animate attributeName="fill" values="#34ace4;#b44cff;#34ace4" dur="10s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+      </div>
+
       <main>
         {/* Hero */}
         <section className="w-full flex justify-center items-center py-16">

@@ -26,11 +26,20 @@ export default function RegisterPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-  const passwordValidations = {
-    minLength: password.length >= 8,
-    hasUppercase: /[A-ZА-Я]/.test(password),
-    hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
-  };
+  const passwordValidations = [
+    {
+      label: "Не менее 8 символов",
+      valid: password.length >= 8,
+    },
+    {
+      label: "1 заглавная буква",
+      valid: /[A-ZА-Я]/.test(password),
+    },
+    {
+      label: "1 спецсимвол",
+      valid: /[!@#$%^&*()\-_=+\[\]{};:'\"\\|,.<>/?`~]/.test(password),
+    },
+  ];
 
   const handleGoogleRegister = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -151,17 +160,26 @@ export default function RegisterPage() {
                   </button>
                 </div>
 
-                <p className="text-sm mt-1 pl-1">
-                  <span className={passwordValidations.minLength ? 'text-green-400' : 'text-white/60'}>
-                    Не менее 8 символов
-                  </span>,{' '}
-                  <span className={passwordValidations.hasUppercase ? 'text-green-400' : 'text-white/60'}>
-                    1 заглавная буква
-                  </span>,{' '}
-                  <span className={passwordValidations.hasSymbol ? 'text-green-400' : 'text-white/60'}>
-                    1 спецсимвол
-                  </span>
-                </p>
+                {/* Современный блок требований к паролю */}
+                <div className="flex gap-2 mt-1 mb-2">
+                  {passwordValidations.map((rule, idx) => (
+                    <span
+                      key={idx}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium
+                        ${rule.valid ? "bg-green-500/20 text-green-300" : "bg-white/10 text-white/60"}
+                      `}
+                    >
+                      <svg width="16" height="16" fill="none" className="inline-block">
+                        {rule.valid ? (
+                          <path d="M4 8.5l3 3 5-5" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        ) : (
+                          <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
+                        )}
+                      </svg>
+                      {rule.label}
+                    </span>
+                  ))}
+                </div>
 
                 <div className="relative">
                   <input
@@ -175,9 +193,20 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition"
+                    tabIndex={-1}
+                    aria-label={showRepeatPassword ? "Скрыть пароль" : "Показать пароль"}
                   >
-                    {showRepeatPassword ? 'Скрыть' : 'Показать'}
+                    {showRepeatPassword ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <path d="M3 3l18 18M10.5 10.5a3 3 0 104.24 4.24M17.94 17.94A9.77 9.77 0 0021 12c-1.73-4-5.07-7-9-7a9.77 9.77 0 00-4.94 1.44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <ellipse cx="12" cy="12" rx="9" ry="7" stroke="currentColor" strokeWidth="2"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                    )}
                   </button>
                 </div>
 
@@ -215,5 +244,4 @@ export default function RegisterPage() {
       )}
     </>
   );
-
 }
