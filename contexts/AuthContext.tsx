@@ -33,12 +33,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function loadSession() {
-      const { data } = await supabase.auth.getSession();
-      const currentSession = data?.session ?? null;
+      try {
+        const { data } = await supabase.auth.getSession();
+        const currentSession = data?.session ?? null;
 
-      setSession(currentSession);
-      setAuthenticated(!!currentSession);
-      setLoading(false);
+        setSession(currentSession);
+        setAuthenticated(!!currentSession);
+      } catch (error) {
+        console.error('Ошибка загрузки сессии:', error);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadSession();
