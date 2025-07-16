@@ -25,6 +25,7 @@ export default function DashboardClient() {
   const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // новое состояние
+  const [tgCode, setTgCode] = useState(generateCodeWithExpiry().code);
 
   useEffect(() => {
     if (!session) {
@@ -82,6 +83,24 @@ export default function DashboardClient() {
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Обновление кода каждые 5 минут
+  useEffect(() => {
+    let timer;
+    function updateCodeIfExpired() {
+      const { code, expired } = generateCodeWithExpiry();
+      setTgCode(code);
+      if (expired) {
+        // если истёк, сразу обновить
+        setTgCode(generateCodeWithExpiry(true).code);
+      }
+    }
+    timer = setInterval(() => {
+      updateCodeIfExpired();
+    }, 1000 * 30); // проверяем каждые 30 секунд
+
+    return () => clearInterval(timer);
   }, []);
 
   if (loading) {
@@ -395,36 +414,29 @@ export default function DashboardClient() {
               ✕
             </button>
             <h3 className="text-2xl font-bold mb-6">Настройки профиля</h3>
-            {/* Здесь будут поля для настроек профиля */}
-            <div className="flex-grow">
-              <label className="block mb-4">
-                <span className="text-white/90">Имя пользователя</span>
+            {/* Поле для кода и кнопка Telegram */}
+            <div className="mb-4">
+              <span className="block mb-2 text-white/90 font-semibold">Привязка Telegram</span>
+              <div className="flex gap-2 items-center">
                 <input
                   type="text"
-                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
-                  placeholder="Введите новое имя пользователя"
+                  value={tgCode}
+                  readOnly
+                  className="w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white font-mono text-lg tracking-widest text-center select-all"
+                  style={{ letterSpacing: "0.2em" }}
                 />
-              </label>
-              <label className="block mb-4">
-                <span className="text-white/90">Электронная почта</span>
-                <input
-                  type="email"
-                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
-                  placeholder="Введите новую электронную почту"
-                />
-              </label>
-              <label className="block mb-4">
-                <span className="text-white/90">Пароль</span>
-                <input
-                  type="password"
-                  className="mt-1 block w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-[#b44cff] focus:outline-none transition"
-                  placeholder="Введите новый пароль"
-                />
-              </label>
+                <a
+                  href="https://t.me/your_bot_username"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
+                >
+                  <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
+                  Привязать Telegram
+                </a>
+              </div>
+              <p className="text-xs text-white/60 mt-1">Скопируйте код и отправьте его нашему Telegram-боту для привязки аккаунта. Код действует 5 минут.</p>
             </div>
-            <button className="mt-4 bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer">
-              Сохранить изменения
-            </button>
           </div>
         </div>
       )}
@@ -432,6 +444,43 @@ export default function DashboardClient() {
       <Footer />
     </div>
   );
+}
+
+// Вне компонента DashboardClient, до export default function:
+function generateCode() {
+  // Генерирует случайный 6-значный код (один раз при рендере)
+  if (typeof window !== "undefined") {
+    if (!window.__tg_code) {
+      window.__tg_code = Math.floor(100000 + Math.random() * 900000).toString();
+    }
+    return window.__tg_code;
+  }
+  return "------";
+}
+
+// Функция генерации кода с временем жизни 5 минут
+function generateCodeWithExpiry(forceNew = false) {
+  if (typeof window !== "undefined") {
+    const now = Date.now();
+    let data = window.__tg_code_data;
+    if (
+      !data ||
+      !data.code ||
+      !data.expiresAt ||
+      now > data.expiresAt ||
+      forceNew
+    ) {
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = now + 5 * 60 * 1000; // 5 минут
+      data = { code, expiresAt };
+      window.__tg_code_data = data;
+    }
+    return {
+      code: data.code,
+      expired: now > data.expiresAt,
+    };
+  }
+  return { code: "------", expired: false };
 }
 
 
