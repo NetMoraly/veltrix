@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import SubscribeButton from "../components/SubscribeButton";
 
 export default function SubscribePage() {
   const router = useRouter();
@@ -51,35 +52,36 @@ export default function SubscribePage() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-          {/* 🔹 Тариф 7 дней */}
-          <div className="group bg-gradient-to-br from-[#2a0050] to-[#6e1bb3] border border-[#b44cff]/30 rounded-2xl p-8 shadow-2xl flex flex-col items-center text-white transition-all duration-300 hover:shadow-[0_8px_32px_0_rgba(180,76,255,0.25)] hover:scale-[1.03]">
-            <p className="text-2xl font-bold mb-2">7 дней — 999₽</p>
-            <p className="text-sm text-white/70 mb-6 text-center">
-              Доступ к закрытому AI-контенту: ежедневно 3 аналитических разбора
-              событий на основе открытых данных. Вся информация — прямо в вашем
-              личном кабинете на сайте или в боте.
-            </p>
-            <button
-              onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
-              className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] hover:from-[#a23be0] hover:to-[#2fa0d1] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 text-lg hover:scale-105"
-            >
-              Перейти к оплате
-            </button>
+          {/* Тариф 7 дней */}
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-[0_8px_32px_0_rgba(180,76,255,0.15)] hover:shadow-[0_8px_32px_0_rgba(52,172,228,0.18)] transition-all duration-300">
+            <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
+              <p className="text-2xl font-bold mb-2 text-white">7 дней — 999₽</p>
+              <p className="text-sm text-white/70 mb-6 text-center">
+                Доступ к закрытому AI-контенту: ежедневно 3 аналитических разбора
+                событий на основе открытых данных. Вся информация — прямо в вашем
+                личном кабинете на сайте или в боте.
+              </p>
+              <SubscribeButton onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}>
+                Перейти к оплате
+              </SubscribeButton>
+            </div>
           </div>
 
-          {/* 🔹 Тариф 30 дней */}
-          <div className="group bg-gradient-to-br from-[#2a0050] to-[#6e1bb3] border border-[#b44cff]/30 rounded-2xl p-8 shadow-2xl flex flex-col items-center text-white transition-all duration-300 hover:shadow-[0_8px_32px_0_rgba(180,76,255,0.25)] hover:scale-[1.03]">
-            <p className="text-2xl font-bold mb-2">30 дней — 3.499₽</p>
-            <p className="text-sm text-white/70 mb-6 text-center">
-              Долгосрочный доступ к аналитике. Идеально для постоянных
-              пользователей, которые хотят экономить на подписке.
-            </p>
-            <button
-              onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
-              className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] hover:from-[#a23be0] hover:to-[#2fa0d1] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 text-lg hover:scale-105"
-            >
-              Перейти к оплате
-            </button>
+          {/* Тариф 30 дней */}
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-[0_8px_32px_0_rgba(52,172,228,0.15)] hover:shadow-[0_8px_32px_0_rgba(180,76,255,0.18)] transition-all duration-300">
+            <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
+              <p className="text-2xl font-bold mb-2 text-white">30 дней — 3.499₽</p>
+              <p className="text-sm text-white/70 mb-6 text-center">
+                Долгосрочный доступ к аналитике. Идеально для постоянных
+                пользователей, которые хотят экономить на подписке.
+              </p>
+              <button
+                onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
+                className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] hover:from-[#a23be0] hover:to-[#2fa0d1] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 text-lg hover:scale-105"
+              >
+                Перейти к оплате
+              </button>
+            </div>
           </div>
         </div>
 
