@@ -26,7 +26,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-email.svg" alt="Email" className="h-8 w-8 opacity-60" />
+                  <img src="/email.svg" alt="Email" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">support@veltrix-bot.ru</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Для вопросов и поддержки</p>
@@ -44,7 +44,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-telegram.svg" alt="Telegram" className="h-8 w-8 opacity-60" />
+                  <img src="/plane.png" alt="Telegram" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@Veltrix_ai</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Официальный Telegram-канал</p>
@@ -64,7 +64,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-bot.svg" alt="Bot" className="h-8 w-8 opacity-60" />
+                  <img src="/bot.svg" alt="Bot" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@BetLyticBot</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">AI-бот платформы Veltrix</p>
@@ -84,7 +84,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#ff0050] via-[#000] to-[#00f2ea] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-tiktok.svg" alt="TikTok" className="h-8 w-8 opacity-60" />
+                  <img src="/tiktok.svg" alt="TikTok" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_tiktok</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Наш TikTok — коротко о главном</p>
@@ -98,7 +98,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#ff0000] via-[#fff] to-[#282828] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-youtube.svg" alt="YouTube" className="h-8 w-8 opacity-60" />
+                  <img src="/youtube.svg" alt="YouTube" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">Veltrix YouTube</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Видео-аналитика и обзоры</p>
@@ -112,7 +112,7 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#fd5949] via-[#d6249f] to-[#285AEB] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  <img src="/placeholder-instagram.svg" alt="Instagram" className="h-8 w-8 opacity-60" />
+                  <img src="/instagram.svg" alt="Instagram" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_insta</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Фото и новости в Instagram</p>
