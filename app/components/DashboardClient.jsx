@@ -41,52 +41,66 @@ export default function DashboardClient() {
   const [tgCode, setTgCode] = useState(generateCodeWithExpiry().code);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
+  // Замените useEffect с проверкой подписки:
   useEffect(() => {
-    let interval;
-    
     const checkSubscription = async () => {
-      if (!session?.access_token) {
-        console.log('Нет токена доступа');
+      if (!session?.user?.id) {
         setHasActiveSubscription(false);
         setDaysLeft(0);
         setSubscriptionLoading(false);
         return;
       }
 
+      setSubscriptionLoading(true);
+
       try {
-        const response = await fetch('/api/subscription/check', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        // Прямая проверка через supabase клиент
+        const { data: subscription, error } = await supabase
+          .from('subscriptions')
+          .select('subscription_active, subscription_expires_at')
+          .eq('user_id', session.user.id)
+          .single();
 
-        if (!response.ok) {
-          console.error('Ошибка ответа API:', response.status);
-          throw new Error('Ошибка проверки подписки');
+        console.log('Проверка подписки:', { subscription, error, userId: session.user.id });
+
+        if (error) {
+          console.log('Подписка не найдена, создаём запись для пользователя');
+          // Создаём запись если её нет
+          const { error: insertError } = await supabase
+            .from('subscriptions')
+            .insert([{ 
+              user_id: session.user.id, 
+              subscription_active: false,
+              subscription_expires_at: null 
+            }]);
+          
+          if (insertError) {
+            console.error('Ошибка создания записи подписки:', insertError);
+          }
+          
+          setHasActiveSubscription(false);
+          setDaysLeft(0);
+          setSubscriptionLoading(false);
+          return;
         }
 
-        const data = await response.json();
-        
-        // Дополнительная проверка userId
-        if (data.userId !== session.user.id) {
-          console.error('Несоответствие userId');
-          throw new Error('Неверный пользователь');
-        }
-        
-        setHasActiveSubscription(data.hasSubscription);
-        console.log('Статус подписки:', data.hasSubscription);
+        const hasValidSubscription = subscription.subscription_active && 
+          subscription.subscription_expires_at && 
+          new Date(subscription.subscription_expires_at) > new Date();
 
-        if (data.hasSubscription && data.expiresAt) {
+        setHasActiveSubscription(hasValidSubscription);
+        console.log('Статус подписки:', hasValidSubscription);
+
+        if (hasValidSubscription && subscription.subscription_expires_at) {
           const now = new Date();
-          const expires = new Date(data.expiresAt);
+          const expires = new Date(subscription.subscription_expires_at);
           const diffMs = expires.getTime() - now.getTime();
           const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
           setDaysLeft(diffDays);
         } else {
           setDaysLeft(0);
         }
+
       } catch (error) {
         console.error('Ошибка проверки подписки:', error);
         setHasActiveSubscription(false);
@@ -99,12 +113,10 @@ export default function DashboardClient() {
     checkSubscription();
     
     // Проверяем каждые 30 секунд
-    interval = setInterval(checkSubscription, 30000);
+    const interval = setInterval(checkSubscription, 30000);
 
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [session]);
+    return () => clearInterval(interval);
+  }, [session, supabase]);
 
   useEffect(() => {
     if (!loading && !session) {
