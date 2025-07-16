@@ -24,12 +24,15 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-email.svg" alt="Email" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">support@veltrix-bot.ru</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Для вопросов и поддержки</p>
-                <SubscribeButton as="a" href="mailto:support@veltrix-bot.ru">
+                <SubscribeButton
+                  as="a"
+                  href="mailto:support@veltrix-bot.ru"
+                  className="hover:scale-105 cursor-pointer transition-all duration-200"
+                >
                   Написать →
                 </SubscribeButton>
               </div>
@@ -39,12 +42,17 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-telegram.svg" alt="Telegram" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@Veltrix_ai</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Официальный Telegram-канал</p>
-                <SubscribeButton as="a" href="https://t.me/Veltrix_ai" target="_blank" rel="noopener noreferrer">
+                <SubscribeButton
+                  as="a"
+                  href="https://t.me/Veltrix_ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:scale-105 cursor-pointer transition-all duration-200"
+                >
                   Перейти →
                 </SubscribeButton>
               </div>
@@ -54,12 +62,17 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-bot.svg" alt="Bot" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@BetLyticBot</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">AI-бот платформы Veltrix</p>
-                <SubscribeButton as="a" href="https://t.me/BetLyticBot" target="_blank" rel="noopener noreferrer">
+                <SubscribeButton
+                  as="a"
+                  href="https://t.me/BetLyticBot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:scale-105 cursor-pointer transition-all duration-200"
+                >
                   Открыть →
                 </SubscribeButton>
               </div>
@@ -69,7 +82,6 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#ff0050] via-[#000] to-[#00f2ea] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-tiktok.svg" alt="TikTok" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_tiktok</h2>
@@ -79,7 +91,7 @@ export default function ContactsPage() {
                   href="https://tiktok.com/@veltrix_tiktok"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0050] to-[#00f2ea] hover:from-[#ff0050]/80 hover:to-[#00f2ea]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0050]/40 active:scale-98"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0050] to-[#00f2ea] hover:from-[#ff0050]/80 hover:to-[#00f2ea]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0050]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>
@@ -90,7 +102,6 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#ff0000] via-[#fff] to-[#282828] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-youtube.svg" alt="YouTube" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">Veltrix YouTube</h2>
@@ -100,7 +111,7 @@ export default function ContactsPage() {
                   href="https://youtube.com/@veltrix"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0000] to-[#282828] hover:from-[#ff0000]/80 hover:to-[#282828]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0000]/40 active:scale-98"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0000] to-[#282828] hover:from-[#ff0000]/80 hover:to-[#282828]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0000]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>
@@ -111,7 +122,6 @@ export default function ContactsPage() {
             <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#fd5949] via-[#d6249f] to-[#285AEB] shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
-                  {/* Заглушка для SVG */}
                   <img src="/placeholder-instagram.svg" alt="Instagram" className="h-8 w-8 opacity-60" />
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_insta</h2>
@@ -121,7 +131,7 @@ export default function ContactsPage() {
                   href="https://instagram.com/veltrix_insta"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#fd5949] via-[#d6249f] to-[#285AEB] hover:from-[#fd5949]/80 hover:via-[#d6249f]/80 hover:to-[#285AEB]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#fd5949]/40 active:scale-98"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#fd5949] via-[#d6249f] to-[#285AEB] hover:from-[#fd5949]/80 hover:via-[#d6249f]/80 hover:to-[#285AEB]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#fd5949]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>

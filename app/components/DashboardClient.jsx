@@ -20,10 +20,14 @@ export default function DashboardClient() {
   const router = useRouter();
   const { session, loading, supabase } = useAuth();
 
-  // ⬇️ Добавляем автообновление страницы при каждом заходе
+  // ⬇️ Обновлять только при первом заходе за сессию
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.location.reload();
+      const refreshed = sessionStorage.getItem('dashboard_refreshed');
+      if (!refreshed) {
+        sessionStorage.setItem('dashboard_refreshed', '1');
+        window.location.reload();
+      }
     }
   }, []);
   // ⬆️

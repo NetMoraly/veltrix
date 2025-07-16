@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Toast from '../components/Toast';
 import GoogleButton from '../components/GoogleButton';
 import AnimatedLogo from '../components/AnimatedLogo';
+import PrimaryButton from '../components/PrimaryButton';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 
@@ -133,9 +134,20 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition"
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                   >
-                    {showPassword ? 'Скрыть' : 'Показать'}
+                    {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <path d="M3 3l18 18M10.5 10.5a3 3 0 104.24 4.24M17.94 17.94A9.77 9.77 0 0021 12c-1.73-4-5.07-7-9-7a9.77 9.77 0 00-4.94 1.44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <ellipse cx="12" cy="12" rx="9" ry="7" stroke="currentColor" strokeWidth="2"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                    )}
                   </button>
                 </div>
 
@@ -169,22 +181,11 @@ export default function RegisterPage() {
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
-                >
-                  Продолжить
-                </button>
+                <PrimaryButton type="submit" loading={loading}>
+                  Зарегистрироваться
+                </PrimaryButton>
               </form>
             )}
-
-
-
-
-
-
-
             <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleRegister}
@@ -210,7 +211,7 @@ export default function RegisterPage() {
       </div>
 
       {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} type={isError ? "error" : "success"} />
       )}
     </>
   );

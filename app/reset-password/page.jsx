@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Header from '../components/Header';
 import Toast from '../components/Toast';
+import PrimaryButton from '../components/PrimaryButton';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -15,6 +16,7 @@ export default function ResetPasswordPage() {
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [checkingToken, setCheckingToken] = useState(true);
   const [hasSession, setHasSession] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -28,6 +30,7 @@ export default function ResetPasswordPage() {
         setHasSession(true);
       } else {
         setToastMessage('Ссылка устарела или недействительна');
+        setIsError(true);
       }
       setCheckingToken(false);
     };
@@ -44,16 +47,19 @@ export default function ResetPasswordPage() {
 
     if (!password || !repeatPassword) {
       setToastMessage('Заполните оба поля');
+      setIsError(true);
       return;
     }
 
     if (password !== repeatPassword) {
       setToastMessage('Пароли не совпадают');
+      setIsError(true);
       return;
     }
 
     if (!validatePassword(password)) {
       setToastMessage('Пароль должен быть не менее 8 символов, содержать заглавную букву и спецсимвол');
+      setIsError(true);
       return;
     }
 
@@ -63,8 +69,10 @@ export default function ResetPasswordPage() {
 
     if (error) {
       setToastMessage(error.message);
+      setIsError(true);
     } else {
       setToastMessage('Пароль успешно изменен');
+      setIsError(false);
       setTimeout(() => {
         router.push('/login');
       }, 2000);
@@ -97,9 +105,20 @@ export default function ResetPasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-sm text-white/70"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition"
+                tabIndex={-1}
+                aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
               >
-                {showPassword ? 'Скрыть' : 'Показать'}
+                {showPassword ? (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <path d="M3 3l18 18M10.5 10.5a3 3 0 104.24 4.24M17.94 17.94A9.77 9.77 0 0021 12c-1.73-4-5.07-7-9-7a9.77 9.77 0 00-4.94 1.44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <ellipse cx="12" cy="12" rx="9" ry="7" stroke="currentColor" strokeWidth="2"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                )}
               </button>
             </div>
 
@@ -134,13 +153,9 @@ export default function ResetPasswordPage() {
               </button>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
-            >
-              {loading ? 'Сохраняем...' : 'Сменить пароль'}
-            </button>
+            <PrimaryButton type="submit" loading={loading}>
+              Сменить пароль
+            </PrimaryButton>
           </form>
         ) : (
           <p className="text-xl text-red-400">Ошибка: недействительная ссылка</p>
@@ -148,7 +163,7 @@ export default function ResetPasswordPage() {
       </main>
 
       {toastMessage && (
-        <Toast message={toastMessage} onClose={() => setToastMessage("")} />
+        <Toast message={toastMessage} onClose={() => setToastMessage("")} type={isError ? "error" : "success"} />
       )}
     </div>
   );

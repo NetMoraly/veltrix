@@ -61,7 +61,10 @@ export default function SubscribePage() {
                 событий на основе открытых данных. Вся информация — прямо в вашем
                 личном кабинете на сайте или в боте.
               </p>
-              <SubscribeButton onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}>
+              <SubscribeButton
+                onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
+                className="hover:scale-105 cursor-pointer transition-all duration-200"
+              >
                 Перейти к оплате
               </SubscribeButton>
             </div>
@@ -75,12 +78,12 @@ export default function SubscribePage() {
                 Долгосрочный доступ к аналитике. Идеально для постоянных
                 пользователей, которые хотят экономить на подписке.
               </p>
-              <button
+              <SubscribeButton
                 onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
-                className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] hover:from-[#a23be0] hover:to-[#2fa0d1] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 text-lg hover:scale-105"
+                className="hover:scale-105 cursor-pointer transition-all duration-200"
               >
                 Перейти к оплате
-              </button>
+              </SubscribeButton>
             </div>
           </div>
         </div>

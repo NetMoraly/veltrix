@@ -5,29 +5,37 @@ import Header from '../components/Header';
 import Toast from '../components/Toast';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Head from 'next/head';
+import PrimaryButton from '../components/PrimaryButton';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [toastMessage, setToastMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const supabase = createClientComponentClient();
 
   const handleReset = async (e) => {
     e.preventDefault();
     if (!email) {
       setToastMessage('Введите email');
+      setIsError(true);
       return;
     }
 
     const redirectUrl = `${window.location.origin}/reset-password`;
 
+    setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
+    setLoading(false);
 
     if (error) {
       setToastMessage(error.message);
+      setIsError(true);
     } else {
       setToastMessage('Письмо с восстановлением отправлено');
+      setIsError(false);
     }
   };
 
@@ -54,12 +62,9 @@ export default function ForgotPassword() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 mb-4 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
-            <button
-              type="submit"
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition"
-            >
+            <PrimaryButton type="submit" loading={loading} className="w-full">
               Отправить ссылку
-            </button>
+            </PrimaryButton>
 
             <p className="text-xs text-white/60 mt-6 text-center leading-snug">
               Если сброс не работает — открой ссылку прямо из письма,
@@ -70,7 +75,7 @@ export default function ForgotPassword() {
         </main>
 
         {toastMessage && (
-          <Toast message={toastMessage} onClose={() => setToastMessage("")} />
+          <Toast message={toastMessage} onClose={() => setToastMessage("")} type={isError ? "error" : "success"} />
         )}
       </div>
     </>
