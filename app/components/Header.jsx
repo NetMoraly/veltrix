@@ -2,29 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+import { useAuth } from "contexts/AuthContext";
 import BrandLogo from "./BrandLogo";
 
 export default function Header({ onOpenProfileSettings }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const supabase = createClientComponentClient();
+  const router = useRouter();
+  const { authenticated, loading, logout } = useAuth();
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (data?.session?.user?.id) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-      setLoading(false);
-    };
-
-    checkSession();
-
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
@@ -33,12 +21,16 @@ export default function Header({ onOpenProfileSettings }) {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [supabase]);
+  }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setIsLoggedIn(false);
-    window.location.href = "/";
+    try {
+      await logout();
+      setDropdownOpen(false);
+      router.push("/login");
+    } catch (error) {
+      console.error("Ошибка при выходе:", error);
+    }
   };
 
   if (loading) return null;
@@ -59,7 +51,7 @@ export default function Header({ onOpenProfileSettings }) {
             Контакты
           </Link>
 
-          {isLoggedIn ? (
+          {authenticated ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((prev) => !prev)}

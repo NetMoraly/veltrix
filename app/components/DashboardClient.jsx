@@ -242,21 +242,20 @@ export default function DashboardClient() {
     ))}
   </div>
 
-{!hasActiveSubscription && (
-  <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-4 p-6 bg-[#1a0033]/60 backdrop-blur-sm shadow-[inset_0_0_40px_rgba(0,0,0,0.3)]">
-    <p className="text-white text-lg font-semibold text-center max-w-xs">
-      Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
-    </p>
-    <button
-      onClick={() => router.push('/subscribe')}
-      className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
-      type="button"
-    >
-      Купить подписку
-    </button>
-  </div>
-)}
-
+  {!hasActiveSubscription && (
+    <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-4 p-6 bg-[#1a0033]/60 backdrop-blur-sm shadow-[inset_0_0_40px_rgba(0,0,0,0.3)]">
+      <p className="text-white text-lg font-semibold text-center max-w-xs">
+        Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
+      </p>
+      <button
+        onClick={() => router.push('/subscribe')}
+        className="bg-white/10 border border-transparent hover:bg-gradient-to-r hover:from-[#3a8d6e] hover:via-[#4caf80] hover:to-[#2f6e58] hover:border-transparent text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-200 cursor-pointer"
+        type="button"
+      >
+        Перейти к оплате
+      </button>
+    </div>
+  )}
 </section>
 
 

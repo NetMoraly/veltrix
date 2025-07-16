@@ -9,6 +9,7 @@ interface AuthContextType {
   loading: boolean;
   authenticated: boolean;
   supabase: SupabaseClient<any, 'public', any>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +20,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setSession(null);
+      setAuthenticated(false);
+    } catch (error) {
+      console.error('Ошибка при выходе:', error);
+    }
+  };
 
   useEffect(() => {
     async function loadSession() {
@@ -43,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   return (
-    <AuthContext.Provider value={{ session, loading, authenticated, supabase }}>
+    <AuthContext.Provider value={{ session, loading, authenticated, supabase, logout }}>
       {children}
     </AuthContext.Provider>
   );
