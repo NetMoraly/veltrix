@@ -207,31 +207,51 @@ export default function DashboardClient() {
             </button>
           </div>
         </div>
+<section className="mb-10 relative">
+  <h2 className="text-2xl font-semibold mb-6">Аналитика предстоящих событий на сегодня</h2>
 
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-6">Аналитика предстоящих событий</h2>
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {forecasts.map((forecast, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-white/10 shadow-lg backdrop-blur-xl text-white flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-lg font-bold mb-1">{forecast.match}</h3>
-                  <p className="text-sm text-white/70 mb-4">Время: {forecast.time}</p>
-                  <p className="text-white/90 line-clamp-4">{forecast.analysis}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedForecast(forecast)}
-                  className="mt-4 self-start bg-gradient-to-r from-[#b44cff] to-[#34ace4] px-5 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
-                  type="button"
-                >
-                  Подробнее
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
+  <div
+    className={`grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ${
+      !hasActiveSubscription ? "filter blur-sm pointer-events-none select-none" : ""
+    }`}
+  >
+    {forecasts.map((forecast, idx) => (
+      <div
+        key={idx}
+        className="p-6 rounded-2xl bg-white/10 shadow-lg backdrop-blur-xl text-white flex flex-col justify-between"
+      >
+        <div>
+          <h3 className="text-lg font-bold mb-1">{forecast.match}</h3>
+          <p className="text-sm text-white/70 mb-4">Время: {forecast.time}</p>
+          <p className="text-white/90 line-clamp-4">{forecast.analysis}</p>
+        </div>
+        <button
+          onClick={() => setSelectedForecast(forecast)}
+          className="mt-4 self-start bg-gradient-to-r from-[#b44cff] to-[#34ace4] px-5 py-2 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
+          type="button"
+        >
+          Подробнее
+        </button>
+      </div>
+    ))}
+  </div>
+
+  {!hasActiveSubscription && (
+    <div className="absolute inset-0 bg-black/60 rounded-2xl flex flex-col items-center justify-center gap-4 p-6">
+      <p className="text-white text-lg font-semibold text-center max-w-xs">
+        Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
+      </p>
+      <button
+        onClick={() => router.push('/subscribe')}
+        className="bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
+        type="button"
+      >
+        Купить подписку
+      </button>
+    </div>
+  )}
+</section>
+
 
         <section className="mb-10 rounded-2xl p-6 shadow-lg bg-white/5 backdrop-blur-xl">
           <h2 className="text-2xl font-semibold mb-6 text-white">Точность модели за 7 дней</h2>
