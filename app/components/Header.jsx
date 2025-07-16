@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import BrandLogo from "./BrandLogo";
 
-export default function Header() {
+export default function Header({ onOpenProfileSettings }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -64,7 +64,16 @@ export default function Header() {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-[#2a0145]/90 text-white rounded-xl shadow-xl py-2 z-50 backdrop-blur border border-white/10">
                   <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 hover:bg-white/10 transition">Профиль</Link>
-                  <Link href="/settings" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 hover:bg-white/10 transition">Настройки</Link>
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      onOpenProfileSettings && onOpenProfileSettings();
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-white/10 transition"
+                    type="button"
+                  >
+                    Настройки
+                  </button>
                   <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-white/10 transition">Выйти</button>
                 </div>
               )}
