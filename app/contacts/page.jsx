@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import SubscribeButton from '../components/SubscribeButton';
+import TikTokButton from '../components/TikTokButton';
+import YouTubeButton from '../components/YouTubeButton';
+import InstagramButton from '../components/InstagramButton';
 
 export default function ContactsPage() {
   return (
@@ -86,15 +89,10 @@ export default function ContactsPage() {
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_tiktok</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Наш TikTok — коротко о главном</p>
-                <SubscribeButton
-                  as="a"
-                  href="https://tiktok.com/@veltrix_tiktok"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0050] to-[#00f2ea] hover:from-[#25F4EE] hover:via-[#FE2C55] hover:to-[#000000] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#25F4EE]/40 active:scale-98 hover:scale-105 cursor-pointer"
-                >
-                  Смотреть →
-                </SubscribeButton>
+        <TikTokButton href="https://tiktok.com/@veltrix_tiktok">
+  Смотреть →
+</TikTokButton>
+
               </div>
             </div>
 
@@ -106,15 +104,10 @@ export default function ContactsPage() {
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">Veltrix YouTube</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Видео-аналитика и обзоры</p>
-                <SubscribeButton
-                  as="a"
-                  href="https://youtube.com/@veltrix"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0000] to-[#282828] hover:from-[#C4302B] hover:via-[#8f00ff] hover:to-[#282828] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0000]/40 active:scale-98 hover:scale-105 cursor-pointer"
-                >
-                  Смотреть →
-                </SubscribeButton>
+            
+<YouTubeButton href="https://youtube.com/@veltrix">
+  Смотреть →
+</YouTubeButton>
               </div>
             </div>
 
@@ -126,15 +119,9 @@ export default function ContactsPage() {
                 </div>
                 <h2 className="text-xl font-bold mb-2 text-white">@veltrix_insta</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">Фото и новости в Instagram</p>
-                <SubscribeButton
-                  as="a"
-                  href="https://instagram.com/veltrix_insta"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#fd5949] via-[#d6249f] to-[#285AEB] hover:from-[#F8334A] hover:via-[#FCAB10] hover:via-55% hover:to-[#FFE633] hover:to-80% hover:to-[#2477B3] hover:to-95% hover:to-[#7C528F] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#F8334A]/40 active:scale-98 hover:scale-105 cursor-pointer"
-                >
-                  Смотреть →
-                </SubscribeButton>
+               <InstagramButton href="https://instagram.com/veltrix_insta">
+  Смотреть →
+</InstagramButton>
               </div>
             </div>
           </div>
@@ -149,7 +136,7 @@ export default function ContactsPage() {
                 height="80"
                 frameBorder="0"
                 scrolling="no"
-                allowTransparency="true"
+               allow="transparent"
                 className="rounded-xl"
                 style={{
                   minWidth: 250,

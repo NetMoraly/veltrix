@@ -193,21 +193,33 @@ export default function ResetPasswordPage() {
             </div>
 
             {/* Кнопка смены пароля в стиле GoogleButton */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-gray-800 font-semibold text-base hover:bg-gray-100 transition-colors ${
-                loading ? "opacity-60 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading && (
-                <svg className="animate-spin h-5 w-5 text-gray-400 mr-2" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                </svg>
-              )}
-              Сменить пароль
-            </button>
+                         <button
+  type="submit"
+  disabled={loading}
+  className={`w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg py-3 transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-700/60 ${
+    loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+  }`}
+>
+  {loading && (
+    <svg className="animate-spin h-5 w-5 text-white mr-2" viewBox="0 0 24 24">
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      />
+    </svg>
+  )}
+  Сменить пароль
+</button>
           </form>
         ) : (
           <p className="text-xl text-red-400">Ошибка: недействительная ссылка</p>

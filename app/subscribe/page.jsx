@@ -64,7 +64,13 @@ export default function SubscribePage() {
               <div className="mt-auto w-full flex justify-center">
                 <SubscribeButton
                   onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
-                  className="hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs"
+                  className="
+                    hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs
+                    bg-white/10 border border-transparent
+                    hover:bg-gradient-to-r hover:from-[#3a8d6e] hover:via-[#4caf80] hover:to-[#2f6e58]
+                    hover:border-transparent
+                    text-white
+                  "
                 >
                   Перейти к оплате
                 </SubscribeButton>
@@ -83,7 +89,13 @@ export default function SubscribePage() {
               <div className="mt-auto w-full flex justify-center">
                 <SubscribeButton
                   onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
-                  className="hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs"
+                  className="
+                    hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs
+                    bg-white/10 border border-transparent
+                    hover:bg-gradient-to-r hover:from-[#3a8d6e] hover:via-[#4caf80] hover:to-[#2f6e58]
+                    hover:border-transparent
+                    text-white
+                  "
                 >
                   Перейти к оплате
                 </SubscribeButton>
@@ -122,27 +134,27 @@ export default function SubscribePage() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div
-            className={`relative bg-gradient-to-br from-[#1e0035] to-[#5e1ab3] text-white rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all duration-200 ${
+            className={`relative bg-gradient-to-br from-[#160029] to-[#6e1bb3] text-white rounded-3xl p-8 max-w-md w-full shadow-[0_8px_32px_rgba(109,27,179,0.4)] transform transition-all duration-200 ${
               animateModal ? "opacity-100 scale-100" : "opacity-0 scale-95"
             }`}
           >
             <button
               onClick={handleModalClose}
-              className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 rounded-full p-2 text-white hover:text-gray-200 text-2xl transition"
+              className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 rounded-full p-2 text-white hover:text-white transition text-3xl leading-none select-none"
               aria-label="Закрыть модалку"
             >
               &times;
             </button>
 
-            <h2 className="text-2xl font-bold text-center mb-4">
+            <h2 className="text-3xl font-extrabold text-center mb-5 drop-shadow-md">
               Войдите или зарегистрируйтесь
             </h2>
-            <p className="text-white/80 text-center mb-8">
+            <p className="text-white/80 text-center mb-8 text-lg">
               Чтобы оплатить подписку, необходимо войти в аккаунт.
             </p>
             <button
               onClick={handleModalConfirm}
-              className="w-full bg-gradient-to-r from-[#b44cff] to-[#34ace4] hover:from-[#a23be0] hover:to-[#2fa0d1] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 text-lg hover:scale-105"
+              className="w-full bg-gradient-to-r from-[#b44cff] via-[#6e1bb3] to-[#34ace4] hover:from-[#9a30e0] hover:via-[#5a0fa3] hover:to-[#2791d3] text-white font-semibold py-3 rounded-2xl shadow-lg transition-transform duration-200 hover:scale-105"
             >
               Перейти к авторизации
             </button>
@@ -152,4 +164,5 @@ export default function SubscribePage() {
     </div>
   );
 }
+
 

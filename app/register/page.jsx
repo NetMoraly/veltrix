@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
@@ -57,17 +57,20 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setIsError(false);
 
     try {
       if (password !== repeatPassword) {
-
         setToastMessage('Пароли не совпадают');
+        setIsError(true);
         setLoading(false);
         return;
       }
 
-      if (!passwordValidations.minLength || !passwordValidations.hasUppercase || !passwordValidations.hasSymbol) {
+      const isPasswordValid = passwordValidations.every(rule => rule.valid);
+      if (!isPasswordValid) {
         setToastMessage('Пароль не соответствует требованиям');
+        setIsError(true);
         setLoading(false);
         return;
       }
@@ -81,7 +84,12 @@ export default function RegisterPage() {
       if (!checkResponse.ok) throw new Error('Ошибка проверки email');
 
       const { exists } = await checkResponse.json();
-      if (exists) throw new Error('Этот email уже зарегистрирован');
+      if (exists) {
+        setToastMessage('Этот email уже зарегистрирован');
+        setIsError(true);
+        setLoading(false);
+        return;
+      }
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -91,12 +99,16 @@ export default function RegisterPage() {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        setToastMessage(error.message);
+        setIsError(true);
+        return;
+      }
 
       setToastMessage('Подтвердите регистрацию через email');
-
     } catch (err) {
-      setToastMessage(err.message);
+      setToastMessage(err.message || 'Ошибка регистрации');
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -160,7 +172,6 @@ export default function RegisterPage() {
                   </button>
                 </div>
 
-                {/* Современный блок требований к паролю */}
                 <div className="flex gap-2 mt-1 mb-2">
                   {passwordValidations.map((rule, idx) => (
                     <span
@@ -176,7 +187,6 @@ export default function RegisterPage() {
                           <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
                         )}
                       </svg>
-                      {/* Для третьего столбца (1 спецсимвол) выравнивание по центру */}
                       {idx === 2 ? (
                         <span className="w-full text-center block">1 спецсимвол</span>
                       ) : (
@@ -215,24 +225,24 @@ export default function RegisterPage() {
                   </button>
                 </div>
 
-                {/* Кнопка регистрации в стиле GoogleButton */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-gray-800 font-semibold text-base hover:bg-gray-100 transition-colors ${
-                    loading ? "opacity-60 cursor-not-allowed" : ""
+                  className={`w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg py-3 transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-700/60 ${
+                    loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
                   }`}
                 >
                   {loading && (
-                    <svg className="animate-spin h-5 w-5 text-gray-400 mr-2" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                    <svg className="animate-spin h-5 w-5 text-white mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                     </svg>
                   )}
                   Зарегистрироваться
                 </button>
               </form>
             )}
+
             <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleRegister}

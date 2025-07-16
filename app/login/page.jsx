@@ -118,42 +118,57 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
                   />
-                  <button
+                     <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center bg-white border border-gray-200 rounded-lg shadow-sm px-2 py-1 hover:bg-gray-100 transition-colors"
+               onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition"
                     tabIndex={-1}
-                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
-                  >
-                    {showPassword ? (
-                      <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24">
+                    aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+>
+  {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                         <path d="M3 3l18 18M10.5 10.5a3 3 0 104.24 4.24M17.94 17.94A9.77 9.77 0 0021 12c-1.73-4-5.07-7-9-7a9.77 9.77 0 00-4.94 1.44" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                         <ellipse cx="12" cy="12" rx="9" ry="7" stroke="currentColor" strokeWidth="2"/>
                         <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                       </svg>
                     )}
                   </button>
+
                 </div>
 
                 {/* Кнопка входа в стиле GoogleButton */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-gray-800 font-semibold text-base hover:bg-gray-100 transition-colors ${
-                    loading ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {loading && (
-                    <svg className="animate-spin h-5 w-5 text-gray-400 mr-2" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                    </svg>
-                  )}
-                  Войти
-                </button>
+  <button
+  type="submit"
+  disabled={loading}
+  className={`w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg py-3 transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-700/60 ${
+    loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+  }`}
+>
+  {loading && (
+    <svg className="animate-spin h-5 w-5 text-white mr-2" viewBox="0 0 24 24">
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      />
+    </svg>
+  )}
+  Войти
+</button>
+
+
               </form>
             )}
 
