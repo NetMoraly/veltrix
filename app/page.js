@@ -1,5 +1,6 @@
 "use client";
 
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import BrandLogo from "./components/BrandLogo";
@@ -10,11 +11,15 @@ import Header from "./components/Header";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  }, []);
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(!!data?.session?.user?.id);
+    }
+    checkSession();
+  }, [supabase]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
