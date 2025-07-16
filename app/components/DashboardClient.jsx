@@ -208,7 +208,7 @@ export default function DashboardClient() {
           </div>
         </div>
 <section className="mb-10 relative">
-  <h2 className="text-2xl font-semibold mb-6">Аналитика предстоящих событий на сегодня</h2>
+  <h2 className="text-2xl font-semibold mb-6">Аналитика предстоящих событий</h2>
 
   <div
     className={`grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ${
@@ -237,7 +237,7 @@ export default function DashboardClient() {
   </div>
 
   {!hasActiveSubscription && (
-    <div className="absolute inset-0 bg-black/60 rounded-2xl flex flex-col items-center justify-center gap-4 p-6">
+    <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-4 p-6 bg-white/10 backdrop-blur-sm">
       <p className="text-white text-lg font-semibold text-center max-w-xs">
         Чтобы получить доступ к аналитике, пожалуйста, оформите подписку.
       </p>
@@ -251,6 +251,7 @@ export default function DashboardClient() {
     </div>
   )}
 </section>
+
 
 
         <section className="mb-10 rounded-2xl p-6 shadow-lg bg-white/5 backdrop-blur-xl">
