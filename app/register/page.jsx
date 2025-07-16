@@ -9,7 +9,6 @@ import Link from 'next/link';
 import Toast from '../components/Toast';
 import GoogleButton from '../components/GoogleButton';
 import AnimatedLogo from '../components/AnimatedLogo';
-import PrimaryButton from '../components/PrimaryButton';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 
@@ -63,14 +62,12 @@ export default function RegisterPage() {
       if (password !== repeatPassword) {
 
         setToastMessage('Пароли не совпадают');
-        setIsError(true);
         setLoading(false);
         return;
       }
 
       if (!passwordValidations.minLength || !passwordValidations.hasUppercase || !passwordValidations.hasSymbol) {
         setToastMessage('Пароль не соответствует требованиям');
-        setIsError(true);
         setLoading(false);
         return;
       }
@@ -97,11 +94,9 @@ export default function RegisterPage() {
       if (error) throw error;
 
       setToastMessage('Подтвердите регистрацию через email');
-      setIsError(false);
 
     } catch (err) {
       setToastMessage(err.message);
-      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -181,7 +176,12 @@ export default function RegisterPage() {
                           <circle cx="8" cy="8" r="6" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
                         )}
                       </svg>
-                      {rule.label}
+                      {/* Для третьего столбца (1 спецсимвол) выравнивание по центру */}
+                      {idx === 2 ? (
+                        <span className="w-full text-center block">1 спецсимвол</span>
+                      ) : (
+                        rule.label
+                      )}
                     </span>
                   ))}
                 </div>
@@ -215,9 +215,22 @@ export default function RegisterPage() {
                   </button>
                 </div>
 
-                <PrimaryButton type="submit" loading={loading}>
+                {/* Кнопка регистрации в стиле GoogleButton */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3 text-gray-800 font-semibold text-base hover:bg-gray-100 transition-colors ${
+                    loading ? "opacity-60 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {loading && (
+                    <svg className="animate-spin h-5 w-5 text-gray-400 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                    </svg>
+                  )}
                   Зарегистрироваться
-                </PrimaryButton>
+                </button>
               </form>
             )}
             <div className="mt-4">

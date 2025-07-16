@@ -27,41 +27,68 @@ export default function Home() {
 
       {/* Глобальная геометрическая анимация */}
       <div className="fixed inset-0 -z-10 pointer-events-none select-none">
-        {/* SVG blobs */}
-        <svg width="100%" height="100%" viewBox="0 0 1920 1080" className="absolute inset-0 w-full h-full" style={{ minHeight: 700 }}>
+        {/* SVG + CSS анимация: AI-стиль, волны, точки, линии */}
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 1920 1080"
+          className="absolute inset-0 w-full h-full"
+          style={{ minHeight: 700 }}
+        >
           <defs>
-            <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
+            <radialGradient id="ai-bg1" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#b44cff" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#b44cff" stopOpacity="0" />
             </radialGradient>
-            <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
+            <radialGradient id="ai-bg2" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#34ace4" stopOpacity="0.13" />
               <stop offset="100%" stopColor="#34ace4" stopOpacity="0" />
             </radialGradient>
+            <linearGradient id="ai-wave" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#b44cff" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#34ace4" stopOpacity="0.10" />
+            </linearGradient>
           </defs>
-          {/* Blob 1 */}
+          {/* Большие мягкие эллипсы */}
           <ellipse
             cx="400"
             cy="400"
             rx="320"
             ry="180"
-            fill="url(#blob1)"
+            fill="url(#ai-bg1)"
           >
             <animate attributeName="cx" values="400;600;400" dur="12s" repeatCount="indefinite" />
             <animate attributeName="cy" values="400;600;400" dur="14s" repeatCount="indefinite" />
           </ellipse>
-          {/* Blob 2 */}
           <ellipse
             cx="1500"
             cy="700"
             rx="260"
             ry="140"
-            fill="url(#blob2)"
+            fill="url(#ai-bg2)"
           >
             <animate attributeName="cx" values="1500;1300;1500" dur="13s" repeatCount="indefinite" />
             <animate attributeName="cy" values="700;900;700" dur="15s" repeatCount="indefinite" />
           </ellipse>
-          {/* Светящиеся точки */}
+          {/* Волны нейросети */}
+          <path
+            d="M0 900 Q480 700 960 900 T1920 900"
+            stroke="url(#ai-wave)"
+            strokeWidth="60"
+            fill="none"
+            opacity="0.18"
+          >
+            <animate attributeName="d"
+              values="
+                M0 900 Q480 700 960 900 T1920 900;
+                M0 900 Q480 800 960 800 T1920 900;
+                M0 900 Q480 700 960 900 T1920 900
+              "
+              dur="12s"
+              repeatCount="indefinite"
+            />
+          </path>
+          {/* Светящиеся точки (AI-узлы) */}
           <circle cx="900" cy="200" r="3">
             <animate attributeName="cy" values="200;250;200" dur="8s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="0.7;0.2;0.7" dur="8s" repeatCount="indefinite" />
@@ -80,7 +107,30 @@ export default function Home() {
             <animate attributeName="r" values="4;8;4" dur="10s" repeatCount="indefinite" />
             <animate attributeName="fill" values="#34ace4;#b44cff;#34ace4" dur="10s" repeatCount="indefinite" />
           </circle>
+          {/* Линии нейросети */}
+          <polyline
+            points="300,300 500,200 700,350 900,250 1100,400 1300,300 1500,450"
+            fill="none"
+            stroke="#34ace4"
+            strokeWidth="3"
+            opacity="0.13"
+          >
+            <animate attributeName="points"
+              values="
+                300,300 500,200 700,350 900,250 1100,400 1300,300 1500,450;
+                300,320 500,220 700,370 900,270 1100,420 1300,320 1500,470;
+                300,300 500,200 700,350 900,250 1100,400 1300,300 1500,450
+              "
+              dur="10s"
+              repeatCount="indefinite"
+            />
+          </polyline>
         </svg>
+        {/* CSS-анимированные точки (дополнительный AI-эффект) */}
+        <div className="absolute left-[20vw] top-[30vh] w-3 h-3 rounded-full bg-[#b44cff] blur-[2px] animate-pulse" style={{ animationDuration: "2.5s" }} />
+        <div className="absolute left-[60vw] top-[60vh] w-4 h-4 rounded-full bg-[#34ace4] blur-[2px] animate-pulse" style={{ animationDuration: "3.2s" }} />
+        <div className="absolute left-[80vw] top-[15vh] w-2 h-2 rounded-full bg-[#b44cff] blur-[1.5px] animate-pulse" style={{ animationDuration: "2.1s" }} />
+        <div className="absolute left-[35vw] top-[75vh] w-2.5 h-2.5 rounded-full bg-[#34ace4] blur-[1.5px] animate-pulse" style={{ animationDuration: "2.8s" }} />
       </div>
 
       <main>

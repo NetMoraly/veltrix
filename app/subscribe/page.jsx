@@ -51,9 +51,9 @@ export default function SubscribePage() {
           Выберите подходящий вам план подписки
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full items-stretch">
           {/* Тариф 7 дней */}
-          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-[0_8px_32px_0_rgba(180,76,255,0.15)] hover:shadow-[0_8px_32px_0_rgba(52,172,228,0.18)] transition-all duration-300">
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#b44cff] via-[#34ace4] to-[#b44cff] shadow-[0_8px_32px_0_rgba(180,76,255,0.15)] hover:shadow-[0_8px_32px_0_rgba(52,172,228,0.18)] transition-all duration-300 flex flex-col h-full">
             <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
               <p className="text-2xl font-bold mb-2 text-white">7 дней — 999₽</p>
               <p className="text-sm text-white/70 mb-6 text-center">
@@ -61,29 +61,33 @@ export default function SubscribePage() {
                 событий на основе открытых данных. Вся информация — прямо в вашем
                 личном кабинете на сайте или в боте.
               </p>
-              <SubscribeButton
-                onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
-                className="hover:scale-105 cursor-pointer transition-all duration-200"
-              >
-                Перейти к оплате
-              </SubscribeButton>
+              <div className="mt-auto w-full flex justify-center">
+                <SubscribeButton
+                  onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
+                  className="hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs"
+                >
+                  Перейти к оплате
+                </SubscribeButton>
+              </div>
             </div>
           </div>
 
           {/* Тариф 30 дней */}
-          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-[0_8px_32px_0_rgba(52,172,228,0.15)] hover:shadow-[0_8px_32px_0_rgba(180,76,255,0.18)] transition-all duration-300">
+          <div className="relative group rounded-2xl p-[2px] bg-gradient-to-br from-[#34ace4] via-[#b44cff] to-[#34ace4] shadow-[0_8px_32px_0_rgba(52,172,228,0.15)] hover:shadow-[0_8px_32px_0_rgba(180,76,255,0.18)] transition-all duration-300 flex flex-col h-full">
             <div className="bg-gradient-to-br from-[#1a0033]/90 to-[#6e1bb3]/80 rounded-2xl p-8 flex flex-col items-center h-full">
               <p className="text-2xl font-bold mb-2 text-white">30 дней — 3.499₽</p>
               <p className="text-sm text-white/70 mb-6 text-center">
                 Долгосрочный доступ к аналитике. Идеально для постоянных
                 пользователей, которые хотят экономить на подписке.
               </p>
-              <SubscribeButton
-                onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
-                className="hover:scale-105 cursor-pointer transition-all duration-200"
-              >
-                Перейти к оплате
-              </SubscribeButton>
+              <div className="mt-auto w-full flex justify-center">
+                <SubscribeButton
+                  onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
+                  className="hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs"
+                >
+                  Перейти к оплате
+                </SubscribeButton>
+              </div>
             </div>
           </div>
         </div>

@@ -91,7 +91,7 @@ export default function ContactsPage() {
                   href="https://tiktok.com/@veltrix_tiktok"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0050] to-[#00f2ea] hover:from-[#ff0050]/80 hover:to-[#00f2ea]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0050]/40 active:scale-98 hover:scale-105 cursor-pointer"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0050] to-[#00f2ea] hover:from-[#25F4EE] hover:via-[#FE2C55] hover:to-[#000000] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#25F4EE]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>
@@ -111,7 +111,7 @@ export default function ContactsPage() {
                   href="https://youtube.com/@veltrix"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0000] to-[#282828] hover:from-[#ff0000]/80 hover:to-[#282828]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0000]/40 active:scale-98 hover:scale-105 cursor-pointer"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#ff0000] to-[#282828] hover:from-[#C4302B] hover:via-[#8f00ff] hover:to-[#282828] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#ff0000]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>
@@ -131,7 +131,7 @@ export default function ContactsPage() {
                   href="https://instagram.com/veltrix_insta"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#fd5949] via-[#d6249f] to-[#285AEB] hover:from-[#fd5949]/80 hover:via-[#d6249f]/80 hover:to-[#285AEB]/80 transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#fd5949]/40 active:scale-98 hover:scale-105 cursor-pointer"
+                  className="w-full rounded-xl py-3 px-6 font-semibold text-base text-white border-0 bg-gradient-to-r from-[#fd5949] via-[#d6249f] to-[#285AEB] hover:from-[#F8334A] hover:via-[#FCAB10] hover:via-55% hover:to-[#FFE633] hover:to-80% hover:to-[#2477B3] hover:to-95% hover:to-[#7C528F] transition-all duration-200 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#F8334A]/40 active:scale-98 hover:scale-105 cursor-pointer"
                 >
                   Смотреть →
                 </SubscribeButton>
