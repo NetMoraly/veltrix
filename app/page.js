@@ -94,7 +94,7 @@ export default function Home() {
     <div className="bg-[#22064b]/90 rounded-2xl px-6 py-8 flex flex-col items-center border border-[#b44cff]/10 shadow-xl max-w-[320px] w-full mx-auto">
       {/* Check Icon */}
       <svg width={56} height={56} fill="none" stroke="#b44cff" strokeWidth={2.5} viewBox="0 0 48 48" className="mb-4">
-        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth={2.5} fill="none"/>
+        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth="2.5" fill="none"/>
         <path d="M17 25l5 5 9-9" stroke="#b44cff" strokeWidth={2.5} strokeLinecap="round"/>
       </svg>
       <h3 className="text-xl font-bold text-[#b44cff] mb-3 text-center">Доступ к аналитике</h3>
@@ -106,7 +106,7 @@ export default function Home() {
     <div className="bg-[#22064b]/90 rounded-2xl px-6 py-8 flex flex-col items-center border border-[#b44cff]/10 shadow-xl max-w-[320px] w-full mx-auto">
       {/* Lock Icon */}
       <svg width={56} height={56} fill="none" stroke="#b44cff" strokeWidth={2.5} viewBox="0 0 48 48" className="mb-4">
-        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth={2.5} fill="none"/>
+        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth="2.5" fill="none"/>
         <rect x="16" y="28" width="16" height="8" rx="3" stroke="#b44cff" strokeWidth={2.5}/>
         <path d="M18 28v-4a6 6 0 1112 0v4" stroke="#b44cff" strokeWidth={2.5}/>
       </svg>
@@ -119,7 +119,7 @@ export default function Home() {
     <div className="bg-[#22064b]/90 rounded-2xl px-6 py-8 flex flex-col items-center border border-[#b44cff]/10 shadow-xl max-w-[320px] w-full mx-auto">
       {/* Support Icon */}
       <svg width={56} height={56} fill="none" stroke="#b44cff" strokeWidth={2.5} viewBox="0 0 48 48" className="mb-4">
-        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth={2.5} fill="none"/>
+        <circle cx="24" cy="24" r="20" stroke="#b44cff" strokeWidth="2.5" fill="none"/>
         <path d="M24 32v-8m0 0l6-6m-6 6l-6-6" stroke="#b44cff" strokeWidth={2.5} strokeLinecap="round"/>
       </svg>
       <h3 className="text-xl font-bold text-[#b44cff] mb-3 text-center">Служба поддержки</h3>
@@ -166,7 +166,7 @@ export default function Home() {
     href={isAuthenticated ? "/dashboard" : "/register"}
     className="mt-2 px-10 py-4 rounded-2xl bg-gradient-to-r from-[#b44cff] via-[#7127e2] to-[#34ace4] font-bold text-xl shadow-xl hover:scale-105 transition-all duration-200 text-white flex items-center gap-3"
   >
-    {isAuthenticated ? "Перейти в кабинет" : "Зарегистрироваться"}
+    {isAuthenticated ? "Личный кабинет" : "Зарегистрироваться"}
     <svg width={24} height={24} fill="none" stroke="white" strokeWidth={2.2} viewBox="0 0 24 24">
       <path d="M5 12h14M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
