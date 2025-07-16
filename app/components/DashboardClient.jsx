@@ -346,7 +346,8 @@ export default function DashboardClient() {
             if (e.target === e.currentTarget) setSelectedForecast(null);
           }}
         >
-          <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-6 rounded-2xl shadow-2xl max-w-md w-full relative transition-all duration-300 flex flex-col">
+         <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white px-8 py-10 rounded-2xl shadow-2xl max-w-md w-full relative transition-all duration-300 flex flex-col">
+
             <button
               onClick={() => setSelectedForecast(null)}
               className="absolute top-4 right-4 text-white/70 hover:text-white text-xl transition transform hover:scale-125 cursor-pointer"

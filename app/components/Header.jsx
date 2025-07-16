@@ -77,16 +77,7 @@ export default function Header({ onOpenProfileSettings }) {
                   >
                     Профиль
                   </Link>
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      onOpenProfileSettings && onOpenProfileSettings();
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-white/10 transition cursor-pointer"
-                    type="button"
-                  >
-                    Настройки
-                  </button>
+                
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 hover:bg-white/10 transition cursor-pointer"
