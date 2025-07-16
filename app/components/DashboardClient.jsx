@@ -39,46 +39,72 @@ export default function DashboardClient() {
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // новое состояние
   const [tgCode, setTgCode] = useState(generateCodeWithExpiry().code);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
   useEffect(() => {
-    if (!session) {
-      setHasActiveSubscription(false);
-      setDaysLeft(0);
-      return;
-    }
-
-    async function checkSubscription() {
-      const userId = session.user?.id;
-      if (!userId) {
+    let interval;
+    
+    const checkSubscription = async () => {
+      if (!session?.access_token) {
+        console.log('Нет токена доступа');
         setHasActiveSubscription(false);
         setDaysLeft(0);
+        setSubscriptionLoading(false);
         return;
       }
 
-      const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select('subscription_active, subscription_expires_at')
-        .eq('user_id', userId)
-        .eq('subscription_active', true)
-        .single();
+      try {
+        const response = await fetch('/api/subscription/check', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (subscription && subscription.subscription_expires_at) {
-        setHasActiveSubscription(true);
+        if (!response.ok) {
+          console.error('Ошибка ответа API:', response.status);
+          throw new Error('Ошибка проверки подписки');
+        }
 
-        const now = new Date();
-        const expires = new Date(subscription.subscription_expires_at);
-        const diffMs = expires.getTime() - now.getTime();
-        const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        const data = await response.json();
+        
+        // Дополнительная проверка userId
+        if (data.userId !== session.user.id) {
+          console.error('Несоответствие userId');
+          throw new Error('Неверный пользователь');
+        }
+        
+        setHasActiveSubscription(data.hasSubscription);
+        console.log('Статус подписки:', data.hasSubscription);
 
-        setDaysLeft(diffDays);
-      } else {
+        if (data.hasSubscription && data.expiresAt) {
+          const now = new Date();
+          const expires = new Date(data.expiresAt);
+          const diffMs = expires.getTime() - now.getTime();
+          const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+          setDaysLeft(diffDays);
+        } else {
+          setDaysLeft(0);
+        }
+      } catch (error) {
+        console.error('Ошибка проверки подписки:', error);
         setHasActiveSubscription(false);
         setDaysLeft(0);
+      } finally {
+        setSubscriptionLoading(false);
       }
-    }
+    };
 
     checkSubscription();
-  }, [session, supabase]);
+    
+    // Проверяем каждые 30 секунд
+    interval = setInterval(checkSubscription, 30000);
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [session]);
 
   useEffect(() => {
     if (!loading && !session) {
@@ -88,15 +114,29 @@ export default function DashboardClient() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Escape для закрытия модалок (работает всегда)
       if (e.key === 'Escape') {
         setSelectedForecast(null);
         setSelectedHistoryItem(null);
         setShowFullHistory(false);
+        return;
+      }
+
+      // Блокировка DevTools только для неподписанных
+      if (!hasActiveSubscription && !subscriptionLoading) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+            (e.ctrlKey && e.key === 'U')) {
+          e.preventDefault();
+          return false;
+        }
       }
     };
+
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [hasActiveSubscription, subscriptionLoading]);
 
   // Обновление кода каждые 5 минут
   useEffect(() => {
@@ -115,6 +155,42 @@ export default function DashboardClient() {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Защита от обхода через DevTools
+  useEffect(() => {
+    if (!hasActiveSubscription && !subscriptionLoading) {
+      // Блокируем правый клик
+      const handleContextMenu = (e) => e.preventDefault();
+      
+      // Детекция DevTools
+      let devtools = { open: false };
+      const threshold = 160;
+      
+      const detectDevTools = () => {
+        if (window.outerHeight - window.innerHeight > threshold ||
+            window.outerWidth - window.innerWidth > threshold) {
+          if (!devtools.open) {
+            devtools.open = true;
+            router.push('/subscribe');
+          }
+        } else {
+          devtools.open = false;
+        }
+      };
+
+      document.addEventListener('contextmenu', handleContextMenu);
+      window.addEventListener('resize', detectDevTools);
+      
+      // Периодическая проверка
+      const devToolsInterval = setInterval(detectDevTools, 1000);
+
+      return () => {
+        document.removeEventListener('contextmenu', handleContextMenu);
+        window.removeEventListener('resize', detectDevTools);
+        clearInterval(devToolsInterval);
+      };
+    }
+  }, [hasActiveSubscription, subscriptionLoading, router]);
 
   if (loading) {
     return (

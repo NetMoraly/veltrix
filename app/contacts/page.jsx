@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
-
 import SubscribeButton from '../components/SubscribeButton';
 import TikTokButton from '../components/TikTokButton';
 import YouTubeButton from '../components/YouTubeButton';
@@ -11,35 +10,8 @@ import InstagramButton from '../components/InstagramButton';
 export default function ContactsPage() {
   return (
     <>
-      {/* Простой header без авторизации для публичных страниц */}
-      <header className="w-full px-8 py-4 bg-gradient-to-r from-[#160029] via-[#2d004d] to-[#6e1bb3] shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-white text-xl font-bold">
-            Veltrix
-          </Link>
-          <nav className="flex items-center gap-6 text-white">
-            <Link href="/" className="hover:text-[#b44cff] transition">
-              Главная
-            </Link>
-            <Link href="/#faq" className="hover:text-[#b44cff] transition">
-              FAQ
-            </Link>
-            <Link href="/subscribe" className="hover:text-[#b44cff] transition">
-              Подписка
-            </Link>
-            <Link href="/contacts" className="hover:text-[#b44cff] transition">
-              Контакты
-            </Link>
-            <Link
-              href="/login"
-              className="ml-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#b44cff] to-[#34ace4] font-bold text-white shadow hover:scale-105 transition"
-            >
-              Войти
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+      <Header />
+      
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
         <main className="flex-grow flex flex-col items-center justify-center gap-10 px-6 py-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2 text-center drop-shadow-lg">
