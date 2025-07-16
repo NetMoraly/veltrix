@@ -164,8 +164,9 @@ export default function Home() {
     Ваш быстрый старт с <span className="text-[#34ace4]">AI-аналитикой</span>
     <br />на платформе <span className="text-[#34ace4]">Veltrix</span>
   </h2>
+  Глубокий анализ спортивных данных с помощью AI — в вашем личном кабинете. Современные алгоритмы, поддержка 24/7 и максимальная простота.
   <p className="text-lg md:text-2xl text-white/90 opacity-90 mb-10 max-w-2xl text-center">
-    Все решения для спортивной аналитики и AI — в одном личном кабинете. Современные алгоритмы, поддержка 24/7 и максимальная простота.
+
   </p>
   <a
     href={isAuthenticated ? "/dashboard" : "/register"}
