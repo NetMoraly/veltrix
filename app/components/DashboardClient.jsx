@@ -162,16 +162,17 @@ export default function DashboardClient() {
       // Блокируем правый клик
       const handleContextMenu = (e) => e.preventDefault();
       
-      // Детекция DevTools
+      // Более мягкая защита - только консоль, без редиректа
       let devtools = { open: false };
-      const threshold = 160;
+      const threshold = 200; // Увеличен порог
       
       const detectDevTools = () => {
         if (window.outerHeight - window.innerHeight > threshold ||
             window.outerWidth - window.innerWidth > threshold) {
           if (!devtools.open) {
             devtools.open = true;
-            router.push('/subscribe');
+            console.warn('DevTools detection - но редиректа нет');
+            // Убираем router.push('/subscribe') - не выгоняем пользователей
           }
         } else {
           devtools.open = false;
@@ -179,18 +180,19 @@ export default function DashboardClient() {
       };
 
       document.addEventListener('contextmenu', handleContextMenu);
-      window.addEventListener('resize', detectDevTools);
+      // Убираем resize listener - он слишком агрессивный
+      // window.addEventListener('resize', detectDevTools);
       
-      // Периодическая проверка
-      const devToolsInterval = setInterval(detectDevTools, 1000);
+      // Периодическая проверка только в консоли
+      const devToolsInterval = setInterval(detectDevTools, 5000); // Реже проверяем
 
       return () => {
         document.removeEventListener('contextmenu', handleContextMenu);
-        window.removeEventListener('resize', detectDevTools);
+        // window.removeEventListener('resize', detectDevTools);
         clearInterval(devToolsInterval);
       };
     }
-  }, [hasActiveSubscription, subscriptionLoading, router]);
+  }, [hasActiveSubscription, subscriptionLoading]);
 
   if (loading) {
     return (
