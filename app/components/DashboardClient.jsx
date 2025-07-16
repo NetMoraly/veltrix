@@ -21,6 +21,8 @@ export default function DashboardClient() {
 
   const [daysLeft, setDaysLeft] = useState(3);
   const [selectedForecast, setSelectedForecast] = useState(null);
+  const [showFullHistory, setShowFullHistory] = useState(false);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function DashboardClient() {
         return;
       }
 
-      const { data: subscription, error: subError } = await supabase
+      const { data: subscription } = await supabase
         .from('subscriptions')
         .select('subscription_active, subscription_expires_at')
         .eq('user_id', userId)
@@ -69,6 +71,18 @@ export default function DashboardClient() {
     }
   }, [loading, session, router]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedForecast(null);
+        setSelectedHistoryItem(null);
+        setShowFullHistory(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
@@ -79,7 +93,7 @@ export default function DashboardClient() {
 
   if (!session) return null;
 
-  // Остальной твой JSX без изменений
+  
   const stats = [
     { day: 'Пн', value: 2 },
     { day: 'Вт', value: 1 },
@@ -94,29 +108,56 @@ export default function DashboardClient() {
     {
       match: 'Team A vs Team B',
       time: '18:00',
-      prediction: 'Победа A',
-      analysis: 'Команда A показывает сильную домашнюю форму...',
+      analysis:
+        'Команда A демонстрирует уверенную домашнюю игру с высоким xG (1.8) и выиграла последние 3 матча подряд. Команда B испытывает сложности с мотивацией и нестабильна. Погодные условия прохладные, что может повлиять на темп игры. Для итогового прогноза и оценки переходите в нашего Telegram-бота.',
     },
     {
       match: 'Team C vs Team D',
       time: '21:00',
-      prediction: 'Тотал больше 2.5',
-      analysis: 'Обе команды часто играют результативно...',
+      analysis:
+        'Команды показывают разный стиль: Team C фокусируется на атаке, Team D — на защите. Последние встречи были результативными, однако мотивация у обеих на высоком уровне. Дополнительные детали и прогноз доступны в боте.',
     },
     {
       match: 'Team E vs Team F',
       time: '23:30',
-      prediction: 'Обе забьют',
-      analysis: 'Обе команды стабильно забивают, но плохо защищаются...',
+      analysis:
+        'Команды стабильно забивают, но имеют слабые защитные линии. Холодная погода может снизить интенсивность игры. Итоговую оценку и рекомендации вы найдёте в нашем Telegram-боте.',
     },
   ];
+
+  const historyData = [
+    {
+      match: 'Team A vs Team B',
+      time: '12.07, 18:00',
+      analysis: 'Команда A выглядела предпочтительнее по статистике xG и владению мячом.',
+      success: true,
+    },
+    {
+      match: 'Team C vs Team D',
+      time: '13.07, 20:00',
+      analysis: 'Матч получился закрытым, обороны играли строго, исход был неожиданным.',
+      success: false,
+    },
+    {
+      match: 'Team E vs Team F',
+      time: '14.07, 21:45',
+      analysis: 'Игра шла на встречных курсах, обе команды создавали моменты.',
+      success: true,
+    },
+  ];
+
+  const fullHistoryData = Array.from({ length: 21 }).map((_, i) => ({
+    match: `Команда ${String.fromCharCode(65 + (i % 6))} vs Команда ${String.fromCharCode(66 + (i % 6))}`,
+    time: `0${Math.floor(i / 3) + 10}.07, ${18 + (i % 3) * 2}:00`,
+    // убрали recommendation
+    success: i % 2 === 0,
+  }));
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
       <Header />
       <main className="flex-grow px-4 py-10 text-white max-w-5xl w-full mx-auto">
-        {/* ... весь твой JSX с прогнозами и статистикой без изменений */}
-        {/* просто замени session и supabase на useAuth */}
+
         <div className="mb-10 bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-lg">
             Осталось дней подписки: <span className="font-bold">{daysLeft} дней</span>
@@ -134,24 +175,204 @@ export default function DashboardClient() {
           </div>
         </div>
 
-        {/* ... остальное содержимое и футер */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-6">Аналитика предстоящих событий</h2>
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {forecasts.map((forecast, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl bg-white/10 shadow-lg backdrop-blur-xl text-white flex flex-col justify-between"
+              >
+                <div>
+                  <h3 className="text-lg font-bold mb-1">{forecast.match}</h3>
+                  <p className="text-sm text-white/70 mb-4">Время: {forecast.time}</p>
+                  <p className="text-white/90 line-clamp-4">{forecast.analysis}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedForecast(forecast)}
+                  className="mt-4 self-start bg-gradient-to-r from-[#b44cff] to-[#34ace4] px-5 py-2 rounded-xl font-semibold hover:scale-105 transition"
+                  type="button"
+                >
+                  Подробнее
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-10 rounded-2xl p-6 shadow-lg bg-white/5 backdrop-blur-xl">
+          <h2 className="text-2xl font-semibold mb-6 text-white">Точность модели за 7 дней</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={stats} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.2)" />
+              <XAxis dataKey="day" stroke="#fff" />
+              <YAxis stroke="#fff" allowDecimals={false} />
+              <Tooltip
+                contentStyle={{ backgroundColor: 'rgba(31, 0, 51, 0.9)', borderRadius: 8, color: '#fff' }}
+                labelStyle={{ color: '#b44cff' }}
+                itemStyle={{ color: '#fff' }}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="url(#gradient)"
+                strokeWidth={3}
+                dot={{ stroke: '#b44cff', strokeWidth: 2, fill: '#6e1bb3' }}
+                activeDot={{ r: 8 }}
+              />
+              <defs>
+                <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#b44cff" />
+                  <stop offset="100%" stopColor="#34ace4" />
+                </linearGradient>
+              </defs>
+            </LineChart>
+          </ResponsiveContainer>
+          <p className="mt-2 text-sm text-white/70">
+            AI-модель анализирует события и показывает, сколько рекомендаций совпали с результатом.
+          </p>
+        </section>
+
+        <section className="rounded-2xl p-6 shadow-lg bg-white/5 backdrop-blur-xl mt-10">
+          <h3 className="text-xl font-semibold mb-2 text-white">История рекомендаций за 7 дней</h3>
+          <p className="text-sm text-white/70 mb-4">
+            AI-модель анализировала события и сравнила результаты с собственными наблюдениями.
+          </p>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left text-white/90">
+              <thead className="text-xs uppercase text-white/60 border-b border-white/20">
+                <tr>
+                  <th className="px-4 py-2">Событие</th>
+                  <th className="px-4 py-2">Время</th>
+                  <th className="px-4 py-2">Совпадение</th>
+                  {/* Колонка "Детали" убрана */}
+                </tr>
+              </thead>
+              <tbody>
+                {historyData.map((item, idx) => (
+                  <tr key={idx} className="border-b border-white/10 hover:bg-white/10 transition">
+                    <td className="px-4 py-3">{item.match}</td>
+                    <td className="px-4 py-3">{item.time}</td>
+                    <td className="px-4 py-3">
+                      {item.success ? (
+                        <span className="text-green-400 font-semibold">Да</span>
+                      ) : (
+                        <span className="text-red-400 font-semibold">Нет</span>
+                      )}
+                    </td>
+                    {/* Кнопка "Подробнее" убрана */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <button
+            onClick={() => setShowFullHistory(true)}
+            className="mt-6 px-5 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] text-white rounded-xl font-semibold hover:scale-105 transition"
+            type="button"
+          >
+            Показать полную таблицу
+          </button>
+        </section>
       </main>
 
       {selectedForecast && (
-        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-          <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-6 rounded-2xl shadow-2xl max-w-md w-full relative transition-all duration-300">
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedForecast(null);
+          }}
+        >
+          <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-6 rounded-2xl shadow-2xl max-w-md w-full relative transition-all duration-300 flex flex-col">
             <button
               onClick={() => setSelectedForecast(null)}
               className="absolute top-4 right-4 text-white/70 hover:text-white text-xl transition transform hover:scale-125 cursor-pointer"
+              aria-label="Закрыть"
             >
               ✕
             </button>
             <h3 className="text-xl font-bold mb-4">{selectedForecast.match}</h3>
             <p className="text-sm text-white/70 mb-2">Время: {selectedForecast.time}</p>
-            <p className="mb-4 text-green-400 font-semibold">
-              Прогноз: {selectedForecast.prediction}
-            </p>
-            <p className="text-white/90">{selectedForecast.analysis}</p>
+            <p className="text-white/90 mb-6">{selectedForecast.analysis}</p>
+            <a
+              href="https://t.me/your_bot_username"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-auto block text-center bg-gradient-to-r from-[#b44cff] to-[#34ace4] py-3 rounded-xl font-semibold text-white hover:scale-105 transition"
+              aria-label="Решение модели по событию"
+            >
+              Решение модели по событию
+            </a>
+          </div>
+        </div>
+      )}
+
+      {selectedHistoryItem && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+          onClick={() => setSelectedHistoryItem(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-6 rounded-2xl shadow-2xl max-w-md w-full relative transition-all duration-300"
+          >
+            <button
+              onClick={() => setSelectedHistoryItem(null)}
+              className="absolute top-4 right-4 text-white/70 hover:text-white text-xl transition transform hover:scale-125 cursor-pointer"
+              aria-label="Закрыть"
+            >
+              ✕
+            </button>
+            <h3 className="text-xl font-bold mb-4">{selectedHistoryItem.match}</h3>
+            <p className="text-sm text-white/70 mb-2">Время: {selectedHistoryItem.time}</p>
+            <p className="text-white/90 whitespace-pre-line">{selectedHistoryItem.analysis}</p>
+          </div>
+        </div>
+      )}
+
+      {showFullHistory && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowFullHistory(false);
+          }}
+        >
+          <div className="animate-fadeInScale bg-white/10 backdrop-blur-2xl text-white p-6 rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-auto relative flex flex-col">
+            <button
+              onClick={() => setShowFullHistory(false)}
+              className="absolute top-4 right-4 text-white/70 hover:text-white text-xl transition transform hover:scale-125 cursor-pointer"
+              aria-label="Закрыть"
+            >
+              ✕
+            </button>
+            <h3 className="text-2xl font-bold mb-6">История рекомендаций за 7 дней (полная таблица)</h3>
+            <table className="min-w-full text-sm text-left text-white/90">
+              <thead className="text-xs uppercase text-white/60 border-b border-white/20">
+                <tr>
+                  <th className="px-4 py-2">Событие</th>
+                  <th className="px-4 py-2">Время</th>
+                  {/* Колонка "Рекомендация" убрана */}
+                  <th className="px-4 py-2">Совпадение</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fullHistoryData.map((item, idx) => (
+                  <tr key={idx} className="border-b border-white/10 hover:bg-white/10 transition">
+                    <td className="px-4 py-3">{item.match}</td>
+                    <td className="px-4 py-3">{item.time}</td>
+                    <td className="px-4 py-3">
+                      {item.success ? (
+                        <span className="text-green-400 font-semibold">Да</span>
+                      ) : (
+                        <span className="text-red-400 font-semibold">Нет</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -163,4 +384,5 @@ export default function DashboardClient() {
   );
 
 }
+
 

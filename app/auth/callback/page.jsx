@@ -26,7 +26,7 @@ export default function AuthCallbackPage() {
         await new Promise((res) => setTimeout(res, 600)); // 0.6 секунды задержка
       }
 
-      
+
       router.replace('/login');
     }
 
@@ -51,7 +51,7 @@ function AnimatedLogo() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Outer ring */}
+      {/* Вращающийся круг */}
       <circle
         cx="50"
         cy="50"
@@ -62,20 +62,29 @@ function AnimatedLogo() {
         strokeDasharray="283"
         strokeDashoffset="75"
       />
-      {/* Inner shape (hexagon) */}
-      <polygon
-        points="50,15 79,37 79,73 50,95 21,73 21,37"
+
+      {/* Абстрактный "мозг" — AI элемент */}
+      <path
+        d="M35 40 C30 30, 50 25, 50 40 
+           C50 25, 70 30, 65 40 
+           M35 60 C30 70, 50 75, 50 60 
+           C50 75, 70 70, 65 60"
         stroke="url(#gradient)"
-        strokeWidth="6"
+        strokeWidth="2"
         fill="none"
-        strokeLinecap="round"
+        
       />
+      <circle cx="40" cy="50" r="2" fill="#a855f7" />
+      <circle cx="60" cy="50" r="2" fill="#9333ea" />
+      <line x1="40" y1="50" x2="60" y2="50" stroke="#9333ea" strokeWidth="1.5" strokeDasharray="4 2" />
+
       <defs>
         <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#a855f7" />
           <stop offset="100%" stopColor="#9333ea" />
         </linearGradient>
       </defs>
+
       <style jsx>{`
         svg {
           filter: drop-shadow(0 0 6px #a855f7aa);
@@ -84,3 +93,4 @@ function AnimatedLogo() {
     </svg>
   );
 }
+

@@ -7,8 +7,10 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Link from 'next/link';
 import Toast from '../components/Toast';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import GoogleButton from '../components/GoogleButton';
+import AnimatedLogo from '../components/AnimatedLogo';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -29,18 +31,18 @@ export default function RegisterPage() {
     hasSymbol: /[!@#$%^&*()\-_=+\[\]{};:'"\\|,.<>/?`~]/.test(password),
   };
 
-const handleGoogleRegister = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-    },
-  });
+  const handleGoogleRegister = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
 
-  if (error) {
-    alert('Ошибка регистрации через Google: ' + error.message);
-  }
-};
+    if (error) {
+      alert('Ошибка регистрации через Google: ' + error.message);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -66,17 +68,10 @@ const handleGoogleRegister = async () => {
         body: JSON.stringify({ email }),
       });
 
-      if (!checkResponse.ok) {
-        throw new Error('Ошибка проверки email');
-      }
+      if (!checkResponse.ok) throw new Error('Ошибка проверки email');
 
       const { exists } = await checkResponse.json();
-
-      if (exists) {
-
-        throw new Error('Этот email уже зарегистрирован');
-
-      }
+      if (exists) throw new Error('Этот email уже зарегистрирован');
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -87,8 +82,9 @@ const handleGoogleRegister = async () => {
       });
 
       if (error) throw error;
+
       setToastMessage('Подтвердите регистрацию через email');
-      
+
     } catch (err) {
       setToastMessage(err.message);
     } finally {
@@ -109,74 +105,86 @@ const handleGoogleRegister = async () => {
           <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl text-white mt-[-10px]">
             <h2 className="text-2xl font-bold text-center mb-6">Регистрация</h2>
 
-            <form className="space-y-4" onSubmit={handleRegister}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
-                required
-              />
-
-              <div className="relative">
+            {loading ? (
+              <div className="flex flex-col items-center gap-6 py-12">
+                <AnimatedLogo />
+                <p className="text-white text-center">Создаём аккаунт...</p>
+              </div>
+            ) : (
+              <form className="space-y-4" onSubmit={handleRegister}>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Пароль"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
                   required
                 />
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Пароль"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                  >
+                    {showPassword ? 'Скрыть' : 'Показать'}
+                  </button>
+                </div>
+
+                <p className="text-sm mt-1 pl-1">
+                  <span className={passwordValidations.minLength ? 'text-green-400' : 'text-white/60'}>
+                    Не менее 8 символов
+                  </span>,{' '}
+                  <span className={passwordValidations.hasUppercase ? 'text-green-400' : 'text-white/60'}>
+                    1 заглавная буква
+                  </span>,{' '}
+                  <span className={passwordValidations.hasSymbol ? 'text-green-400' : 'text-white/60'}>
+                    1 спецсимвол
+                  </span>
+                </p>
+
+                <div className="relative">
+                  <input
+                    type={showRepeatPassword ? 'text' : 'password'}
+                    placeholder="Повторите пароль"
+                    value={repeatPassword}
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                  >
+                    {showRepeatPassword ? 'Скрыть' : 'Показать'}
+                  </button>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
                 >
-                  {showPassword ? 'Скрыть' : 'Показать'}
+                  Продолжить
                 </button>
-              </div>
+              </form>
+            )}
 
-              <p className="text-sm mt-1 pl-1">
-                <span className={passwordValidations.minLength ? 'text-green-400' : 'text-white/60'}>
-                  Не менее 8 символов
-                </span>,{' '}
-                <span className={passwordValidations.hasUppercase ? 'text-green-400' : 'text-white/60'}>
-                  1 заглавная буква
-                </span>,{' '}
-                <span className={passwordValidations.hasSymbol ? 'text-green-400' : 'text-white/60'}>
-                  1 спецсимвол
-                </span>
-              </p>
 
-              <div className="relative">
-                <input
-                  type={showRepeatPassword ? 'text' : 'password'}
-                  placeholder="Повторите пароль"
-                  value={repeatPassword}
-                  onChange={(e) => setRepeatPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
-                >
-                  {showRepeatPassword ? 'Скрыть' : 'Показать'}
-                </button>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
-              >
-                {loading ? 'Регистрация...' : 'Продолжить'}
-              </button>
-            </form>
 
-            {/* Вот кнопка Google, ниже формы */}
+
+
+
             <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleRegister}

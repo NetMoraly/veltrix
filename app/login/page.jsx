@@ -4,25 +4,25 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Toast from "../components/Toast";
 import Footer from "../components/Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
-import { useEffect } from 'react';
+
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
-import Image from "next/image";
-import GoogleButton from '../components/GoogleButton'; // убедись, что путь правильный
+import GoogleButton from '../components/GoogleButton';
+import AnimatedLogo from '../components/AnimatedLogo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [telegramLoading, setTelegramLoading] = useState(false);
+
   const [toastMessage, setToastMessage] = useState('');
 
   const router = useRouter();
-
+  
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -46,10 +46,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
-      // 🔒 Ждём реального появления сессии
+
       const { data: sessionData } = await supabase.auth.getSession();
 
       if (sessionData.session) {
@@ -65,18 +65,18 @@ export default function LoginPage() {
     }
   };
 
- const handleGoogleLogin = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-    },
-  });
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
 
-  if (error) {
-    alert('Ошибка регистрации через Google: ' + error.message);
-  }
-};
+    if (error) {
+      alert('Ошибка регистрации через Google: ' + error.message);
+    }
+  };
 
   return (
     <>
@@ -91,42 +91,52 @@ export default function LoginPage() {
           <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
             <h2 className="text-2xl font-bold text-white text-center mb-6">Вход</h2>
 
-            <form className="space-y-4" onSubmit={handleLogin}>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
-              />
-
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Пароль"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
-                >
-                  {showPassword ? "Скрыть" : "Показать"}
-                </button>
+            {loading ? (
+              <div className="flex flex-col items-center gap-6 py-12">
+                <AnimatedLogo />
+                <p className="text-white text-center">Входим в систему...</p>
               </div>
+            ) : (
+              <form className="space-y-4" onSubmit={handleLogin}>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Пароль"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-violet-400 transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/60 hover:text-white text-sm"
+                  >
+                    {showPassword ? "Скрыть" : "Показать"}
+                  </button>
+                </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
-              >
-                {loading ? "Вход..." : "Войти"}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition cursor-pointer"
+                >
+                  Войти
+                </button>
+              </form>
+            )}
 
-            {/* Кнопка входа через Google */}
+
+
+
+
+
             <div className="mt-4">
               <GoogleButton
                 onClick={handleGoogleLogin}
