@@ -12,6 +12,7 @@ export default function SubscribePage() {
   const [isClient, setIsClient] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [animateModal, setAnimateModal] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState({ seven: false, thirty: false });
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -61,16 +62,48 @@ export default function SubscribePage() {
                 событий на основе открытых данных. Вся информация — прямо в вашем
                 личном кабинете на сайте или в боте.
               </p>
+              {/* Чекбокс согласия */}
+              <label className="flex items-center gap-2 mb-4 cursor-pointer select-none text-white/80 text-sm">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms.seven}
+                  onChange={e => setAgreeTerms(prev => ({ ...prev, seven: e.target.checked }))}
+                  className="accent-[#b44cff] w-5 h-5 rounded focus:ring-2 focus:ring-[#b44cff] transition"
+                />
+                <span>
+                  Я ознакомился с&nbsp;
+                  <a
+                    href="https://www.veltrix-bot.ru/documents/User-agreement.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-[#b44cff]"
+                  >
+                    Пользовательским соглашением
+                  </a>
+                  &nbsp;и&nbsp;
+                  <a
+                    href="https://www.veltrix-bot.ru/documents/Privacy-policy.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-[#b44cff]"
+                  >
+                    Политикой конфиденциальности
+                  </a>
+                  &nbsp;и согласен с их условиями.
+                </span>
+              </label>
               <div className="mt-auto w-full flex justify-center">
                 <SubscribeButton
-                  onClick={() => handleSubscribeClick("https://your-7day-payment-link.ru")}
-                  className="
+                  onClick={() => agreeTerms.seven && handleSubscribeClick("https://your-7day-payment-link.ru")}
+                  disabled={!agreeTerms.seven}
+                  className={`
                     hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs
                     bg-white/10 border border-transparent
                     hover:bg-gradient-to-r hover:from-[#3a8d6e] hover:via-[#4caf80] hover:to-[#2f6e58]
                     hover:border-transparent
                     text-white
-                  "
+                    ${!agreeTerms.seven ? "opacity-50 cursor-not-allowed" : ""}
+                  `}
                 >
                   Перейти к оплате
                 </SubscribeButton>
@@ -86,16 +119,48 @@ export default function SubscribePage() {
                 Долгосрочный доступ к аналитике. Идеально для постоянных
                 пользователей, которые хотят экономить на подписке.
               </p>
+              {/* Чекбокс согласия */}
+              <label className="flex items-center gap-2 mb-4 cursor-pointer select-none text-white/80 text-sm">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms.thirty}
+                  onChange={e => setAgreeTerms(prev => ({ ...prev, thirty: e.target.checked }))}
+                  className="accent-[#34ace4] w-5 h-5 rounded focus:ring-2 focus:ring-[#34ace4] transition"
+                />
+                <span>
+                  Я ознакомился с&nbsp;
+                  <a
+                    href="https://www.veltrix-bot.ru/documents/User-agreement.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-[#34ace4]"
+                  >
+                    Пользовательским соглашением
+                  </a>
+                  &nbsp;и&nbsp;
+                  <a
+                    href="https://www.veltrix-bot.ru/documents/Privacy-policy.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-[#34ace4]"
+                  >
+                    Политикой конфиденциальности
+                  </a>
+                  &nbsp;и согласен с их условиями.
+                </span>
+              </label>
               <div className="mt-auto w-full flex justify-center">
                 <SubscribeButton
-                  onClick={() => handleSubscribeClick("https://your-30day-payment-link.ru")}
-                  className="
+                  onClick={() => agreeTerms.thirty && handleSubscribeClick("https://your-30day-payment-link.ru")}
+                  disabled={!agreeTerms.thirty}
+                  className={`
                     hover:scale-105 cursor-pointer transition-all duration-200 w-full max-w-xs
                     bg-white/10 border border-transparent
                     hover:bg-gradient-to-r hover:from-[#3a8d6e] hover:via-[#4caf80] hover:to-[#2f6e58]
                     hover:border-transparent
                     text-white
-                  "
+                    ${!agreeTerms.thirty ? "opacity-50 cursor-not-allowed" : ""}
+                  `}
                 >
                   Перейти к оплате
                 </SubscribeButton>
@@ -104,28 +169,33 @@ export default function SubscribePage() {
           </div>
         </div>
 
+        {/* Современный блок иконок оплаты */}
+        <div className="mt-12 flex flex-col items-center">
+          <span className="text-white/60 text-base mb-4 text-center">
+            Способы оплаты:
+          </span>
+          <div className="flex flex-wrap gap-6 justify-center items-center">
+            {[
+              { src: "/mir.svg", alt: "МИР" },
+              { src: "/mastercard.svg", alt: "Mastercard" },
+              { src: "/visa.svg", alt: "Visa" },
+              { src: "/crypto.svg", alt: "Криптовалюта" },
+              { src: "/sbp.svg", alt: "СБП" },
+            ].map(({ src, alt }) => (
+              <div
+                key={alt}
+                className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-200 hover:bg-white/20"
+              >
+                <img src={src} alt={alt} className="h-8 w-auto" />
+              </div>
+            ))}
+          </div>
+        </div>
+
         <p className="text-white/50 mt-10 text-sm text-center max-w-md">
           После оплаты вы получите доступ к аналитике спортивных событий на срок
           действия подписки.
         </p>
-
-        {/* Современный блок иконок оплаты */}
-        <div className="mt-12 flex flex-wrap gap-6 justify-center items-center">
-          {[
-            { src: "/mir.svg", alt: "МИР" },
-            { src: "/mastercard.svg", alt: "Mastercard" },
-            { src: "/visa.svg", alt: "Visa" },
-            { src: "/crypto.svg", alt: "Криптовалюта" },
-            { src: "/sbp.svg", alt: "СБП" },
-          ].map(({ src, alt }) => (
-            <div
-              key={alt}
-              className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-200 hover:bg-white/20"
-            >
-              <img src={src} alt={alt} className="h-8 w-auto" />
-            </div>
-          ))}
-        </div>
       </div>
 
       <Footer />
