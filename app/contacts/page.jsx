@@ -66,11 +66,11 @@ export default function ContactsPage() {
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 mb-4 shadow-lg">
                   <img src="/bot.svg" alt="Bot" className="h-8 w-8 opacity-60" />
                 </div>
-                <h2 className="text-xl font-bold mb-2 text-white">@BetLyticBot</h2>
+                <h2 className="text-xl font-bold mb-2 text-white">@VeltrixInsightsBot</h2>
                 <p className="text-sm text-white/70 mb-4 text-center">AI-бот платформы Veltrix</p>
                 <SubscribeButton
                   as="a"
-                  href="https://t.me/BetLyticBot"
+                  href="https://t.me/VeltrixInsightsBot"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:scale-105 cursor-pointer transition-all duration-200"

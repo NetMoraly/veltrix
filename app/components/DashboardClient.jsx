@@ -448,7 +448,7 @@ export default function DashboardClient() {
             <p className="text-sm text-white/70 mb-2">Время: {selectedForecast.time}</p>
             <p className="text-white/90 mb-6">{selectedForecast.analysis}</p>
             <a
-              href="https://t.me/your_bot_username"
+              href="https://t.me/VeltrixInsightsBot"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-auto block text-center bg-gradient-to-r from-[#b44cff] to-[#34ace4] py-3 rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
@@ -557,7 +557,7 @@ export default function DashboardClient() {
                   style={{ letterSpacing: "0.2em" }}
                 />
                 <a
-                  href="https://t.me/your_bot_username"
+                  href="https://https://t.me/VeltrixInsightsBot"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
