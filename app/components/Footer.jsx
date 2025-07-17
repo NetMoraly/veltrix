@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 
 import BrandLogo from "./BrandLogo";
@@ -57,6 +56,14 @@ export default function Footer() {
             className="hover:text-white transition"
           >
             Пользовательское соглашение
+          </a>
+          <a
+            href="/documents/Offer.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition"
+          >
+            Публичная оферта
           </a>
         </div>
       </div>
