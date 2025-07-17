@@ -384,7 +384,7 @@ export default function DashboardClient() {
         </section>
 
         <section className="rounded-2xl p-6 shadow-lg bg-white/5 backdrop-blur-xl mt-10">
-          <h3 className="text-xl font-semibold mb-2 text-white">История рекомендаций за 7 дней</h3>
+          <h3 className="text-xl font-semibold mb-2 text-white">Статистический отчёт за 7 дней</h3>
           <p className="text-sm text-white/70 mb-4">
             AI-модель анализировала события и сравнила результаты с собственными наблюдениями.
           </p>
@@ -498,7 +498,7 @@ export default function DashboardClient() {
             >
               ✕
             </button>
-            <h3 className="text-2xl font-bold mb-6">История рекомендаций за 7 дней (полная таблица)</h3>
+            <h3 className="text-2xl font-bold mb-6">Статистический отчёт за 7 дней (полная таблица)</h3>
             <table className="min-w-full text-sm text-left text-white/90">
               <thead className="text-xs uppercase text-white/60 border-b border-white/20">
                 <tr>
