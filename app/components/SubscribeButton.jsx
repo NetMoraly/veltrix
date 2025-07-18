@@ -1,6 +1,9 @@
 'use client';
 
-export default function SubscribeButton({ children, className = '', ...props }) {
+export default function SubscribeButton({ as = 'button', ...props }) {
+  if (as === 'a') {
+    return <a {...props}>{props.children}</a>;
+  }
   return (
     <button
       {...props}
@@ -12,11 +15,11 @@ export default function SubscribeButton({ children, className = '', ...props }) 
         shadow-md transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-[#b44cff]/40
         active:scale-98
-        ${className}
+        ${props.className}
       `}
       style={{ zIndex: 1 }}
     >
-      {children}
+      {props.children}
     </button>
   );
 }
