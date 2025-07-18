@@ -42,6 +42,7 @@ export default function DashboardClient() {
 
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const [tgCode, setTgCode] = useState('------');
+  const [tgStatusMsg, setTgStatusMsg] = useState('');
 
   // Замените useEffect с проверкой подписки:
   useEffect(() => {
@@ -312,8 +313,10 @@ export default function DashboardClient() {
         .single();
       if (data?.telegram_linked) {
         setTelegramLinked(true);
+        setTgStatusMsg('Telegram успешно привязан!');
       } else {
         setTelegramLinked(false);
+        setTgStatusMsg('Ваш Telegram ещё не привязан. Попробуйте позже.');
       }
     }
   };
@@ -615,7 +618,7 @@ export default function DashboardClient() {
                   </a>
                   <button
                     onClick={checkTelegramStatus}
-                    className="ml-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
+                    className="ml-2 px-5 py-2 bg-white/10 border border-white/20 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
                     type="button"
                   >
                     Проверить статус
