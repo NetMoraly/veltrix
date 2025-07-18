@@ -271,7 +271,6 @@ export default function DashboardClient() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
-      <Header onOpenProfileSettings={handleOpenProfileSettings} />
       <main className="flex-grow px-4 py-10 text-white max-w-5xl w-full mx-auto">
 
         <div className="mb-10 bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-xl flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -287,7 +286,7 @@ export default function DashboardClient() {
     Продлить
   </button>
   <button
-    onClick={() => setShowSettingsModal(true)}
+    onClick={handleOpenProfileSettings}
     className="bg-white/10 border border-white/20 px-5 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
   >
     Настройки профиля
