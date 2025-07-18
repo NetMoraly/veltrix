@@ -7,7 +7,7 @@ const supabase = createClient(
 )
 
 export async function POST(req) {
-  const { code, telegram_id } = await req.json()
+  const { code, telegram_id, telegram_username } = await req.json()
 
   if (!code || !telegram_id) {
     return NextResponse.json({ error: 'Нет кода или telegram_id' }, { status: 400 })
@@ -28,10 +28,16 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Код просрочен' }, { status: 400 })
   }
 
-  // Привязать telegram_id и сбросить код
+  // Привязать telegram_id и username, сбросить код
   const { error: updateError } = await supabase
     .from('users')
-    .update({ telegram_id, tg_code: null, tg_code_expires: null })
+    .update({
+      telegram_id,
+      telegram_username, // <-- сохраняем username
+        telegram_linked: true,
+      tg_code: null,
+      tg_code_expires: null
+    })
     .eq('id', user.id)
 
   if (updateError) {
