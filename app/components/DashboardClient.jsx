@@ -302,8 +302,25 @@ export default function DashboardClient() {
     }
   };
 
+  // Добавь функцию здесь:
+  const checkTelegramStatus = async () => {
+    if (session?.user?.id && supabase) {
+      const { data } = await supabase
+        .from('profiles')
+        .select('telegram_linked')
+        .eq('id', session.user.id)
+        .single();
+      if (data?.telegram_linked) {
+        setTelegramLinked(true);
+      } else {
+        setTelegramLinked(false);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
+      <Header /> {/* ← Добавь эту строку */}
       <main className="flex-grow px-4 py-10 text-white max-w-5xl w-full mx-auto">
 
         <div className="mb-10 bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-xl flex flex-col sm:flex-row justify-between items-center gap-4">
