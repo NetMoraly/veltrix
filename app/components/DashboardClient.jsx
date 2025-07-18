@@ -557,7 +557,7 @@ export default function DashboardClient() {
                   style={{ letterSpacing: "0.2em" }}
                 />
                 <a
-                  href="https://https://t.me/VeltrixInsightsBot"
+                  href="https://t.me/VeltrixInsightsBot"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
