@@ -192,6 +192,26 @@ export default function DashboardClient() {
     }
   }, [hasActiveSubscription, subscriptionLoading]);
 
+  // Новый useEffect для проверки статуса Telegram
+  useEffect(() => {
+    const checkTelegramStatus = async () => {
+      if (session?.user?.id && supabase) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('telegram_linked')
+          .eq('id', session.user.id)
+          .single();
+        if (data?.telegram_linked) {
+          setTelegramLinked(true);
+        } else {
+          setTelegramLinked(false);
+        }
+      }
+    };
+
+    checkTelegramStatus();
+  }, [session, supabase]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
@@ -576,6 +596,13 @@ export default function DashboardClient() {
                     <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
                     Привязать Telegram
                   </a>
+                  <button
+                    onClick={checkTelegramStatus}
+                    className="ml-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
+                    type="button"
+                  >
+                    Проверить статус
+                  </button>
                 </div>
               )}
               {!telegramLinked && (
