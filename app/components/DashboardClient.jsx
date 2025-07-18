@@ -599,30 +599,36 @@ export default function DashboardClient() {
                   Telegram успешно привязан!
                 </div>
               ) : (
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    value={tgCode}
-                    readOnly
-                    className="w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white font-mono text-lg tracking-widest text-center select-all"
-                    style={{ letterSpacing: "0.2em" }}
-                  />
-                  <a
-                    href="https://t.me/VeltrixInsightsBot"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
-                  >
-                    <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
-                    Привязать Telegram
-                  </a>
-                  <button
-                    onClick={checkTelegramStatus}
-                    className="ml-2 px-5 py-2 bg-white/10 border border-white/20 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
-                    type="button"
-                  >
-                    Проверить статус
-                  </button>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={tgCode}
+                      readOnly
+                      className="w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white font-mono text-lg tracking-widest text-center select-all"
+                      style={{ letterSpacing: "0.2em" }}
+                    />
+                    <a
+                      href="https://t.me/VeltrixInsightsBot"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
+                    >
+                      <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
+                      Привязать Telegram
+                    </a>
+                    <button
+                      onClick={checkTelegramStatus}
+                      className="ml-2 px-5 py-2 bg-white/10 border border-white/20 rounded-xl text-white font-medium hover:bg-white/20 transition cursor-pointer"
+                      type="button"
+                    >
+                      Проверить статус
+                    </button>
+                  </div>
+                  {/* Вот здесь выводим уведомление */}
+                  {tgStatusMsg && (
+                    <div className="text-xs text-white/80 mt-1">{tgStatusMsg}</div>
+                  )}
                 </div>
               )}
               {!telegramLinked && (
