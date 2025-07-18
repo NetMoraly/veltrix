@@ -28,17 +28,29 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Код просрочен' }, { status: 400 })
   }
 
-  // Привязать telegram_id и username, сбросить код
+  // Проверить, не привязан ли этот telegram_id уже к другому пользователю
+  const { data: existing, error: existingError } = await supabase
+    .from('users')
+    .select('id')
+    .eq('telegram_id', telegram_id)
+    .neq('id', user.id)
+    .single();
+
+  if (existing) {
+    return NextResponse.json({ error: 'Этот Telegram уже привязан к другому аккаунту.' }, { status: 400 });
+  }
+
+  // Теперь можно обновлять профиль
   const { error: updateError } = await supabase
     .from('users')
     .update({
       telegram_id,
-      telegram_username, // <-- сохраняем username
-        telegram_linked: true,
+      telegram_username,
+      telegram_linked: true,
       tg_code: null,
       tg_code_expires: null
     })
-    .eq('id', user.id)
+    .eq('id', user.id);
 
   if (updateError) {
     return NextResponse.json({ error: 'Ошибка при обновлении' }, { status: 500 })
