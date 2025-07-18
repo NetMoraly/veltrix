@@ -38,6 +38,7 @@ export default function DashboardClient() {
   const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // новое состояние
+  const [telegramLinked, setTelegramLinked] = useState(false);
 
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const [tgCode, setTgCode] = useState('------');
@@ -264,8 +265,20 @@ export default function DashboardClient() {
   const handleOpenProfileSettings = async () => {
     setShowSettingsModal(true);
     if (session?.user?.id && supabase) {
-      const code = await generateAndSaveTgCode(session.user.id, supabase);
-      if (code) setTgCode(code);
+      // Получаем профиль пользователя
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('telegram_linked')
+        .eq('id', session.user.id)
+        .single();
+
+      if (data?.telegram_linked) {
+        setTelegramLinked(true);
+      } else {
+        setTelegramLinked(false);
+        const code = await generateAndSaveTgCode(session.user.id, supabase);
+        if (code) setTgCode(code);
+      }
     }
   };
 
@@ -540,25 +553,36 @@ export default function DashboardClient() {
             {/* Поле для кода и кнопка Telegram */}
             <div className="mb-6">
               <span className="block mb-2 text-white/90 font-semibold">Привязка Telegram</span>
-              <div className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={tgCode}
-                  readOnly
-                  className="w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white font-mono text-lg tracking-widest text-center select-all"
-                  style={{ letterSpacing: "0.2em" }}
-                />
-                <a
-                  href="https://t.me/VeltrixInsightsBot"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
-                >
+              {telegramLinked ? (
+                <div className="flex items-center gap-2 text-green-400 font-semibold">
                   <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
-                  Привязать Telegram
-                </a>
-              </div>
-              <p className="text-xs text-white/60 mt-1">Скопируйте код и отправьте его нашему Telegram-боту для привязки аккаунта. Код действует 5 минут.</p>
+                  Telegram успешно привязан!
+                </div>
+              ) : (
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={tgCode}
+                    readOnly
+                    className="w-32 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white font-mono text-lg tracking-widest text-center select-all"
+                    style={{ letterSpacing: "0.2em" }}
+                  />
+                  <a
+                    href="https://t.me/VeltrixInsightsBot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b44cff] to-[#34ace4] rounded-xl font-semibold text-white hover:scale-105 transition cursor-pointer"
+                  >
+                    <img src="/plane.png" alt="Telegram Icon" width={20} height={20} />
+                    Привязать Telegram
+                  </a>
+                </div>
+              )}
+              {!telegramLinked && (
+                <p className="text-xs text-white/60 mt-1">
+                  Скопируйте код и отправьте его нашему Telegram-боту для привязки аккаунта. Код действует 5 минут.
+                </p>
+              )}
             </div>
             {/* Сброс пароля */}
             <div className="mb-2">
