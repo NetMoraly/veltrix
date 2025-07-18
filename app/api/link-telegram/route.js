@@ -15,7 +15,7 @@ export async function POST(req) {
 
   // Найти пользователя по коду и проверить срок действия
   const { data: user, error } = await supabase
-    .from('users')
+    .from('profiles')
     .select('*')
     .eq('tg_code', code)
     .single()
@@ -29,8 +29,8 @@ export async function POST(req) {
   }
 
   // Проверить, не привязан ли этот telegram_id уже к другому пользователю
-  const { data: existing, error: existingError } = await supabase
-    .from('users')
+  const { data: existing } = await supabase
+    .from('profiles')
     .select('id')
     .eq('telegram_id', telegram_id)
     .neq('id', user.id)
@@ -42,7 +42,7 @@ export async function POST(req) {
 
   // Теперь можно обновлять профиль
   const { error: updateError } = await supabase
-    .from('users')
+    .from('profiles')
     .update({
       telegram_id,
       telegram_username,

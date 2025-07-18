@@ -581,8 +581,9 @@ async function generateAndSaveTgCode(userId, supabase) {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   const expires = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 минут
 
+  // Исправь users -> profiles
   const { error } = await supabase
-    .from('users')
+    .from('profiles')
     .update({ tg_code: code, tg_code_expires: expires })
     .eq('id', userId);
 
