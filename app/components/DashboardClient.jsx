@@ -38,8 +38,9 @@ export default function DashboardClient() {
   const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // новое состояние
-  const [tgCode, setTgCode] = useState(generateCodeWithExpiry().code);
+
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [tgCode, setTgCode] = useState('------');
 
   // Замените useEffect с проверкой подписки:
   useEffect(() => {
@@ -150,23 +151,7 @@ export default function DashboardClient() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [hasActiveSubscription, subscriptionLoading]);
 
-  // Обновление кода каждые 5 минут
-  useEffect(() => {
-    let timer;
-    function updateCodeIfExpired() {
-      const { code, expired } = generateCodeWithExpiry();
-      setTgCode(code);
-      if (expired) {
-        // если истёк, сразу обновить
-        setTgCode(generateCodeWithExpiry(true).code);
-      }
-    }
-    timer = setInterval(() => {
-      updateCodeIfExpired();
-    }, 1000 * 30); // проверяем каждые 30 секунд
 
-    return () => clearInterval(timer);
-  }, []);
 
   // Защита от обхода через DevTools
   useEffect(() => {
@@ -276,9 +261,17 @@ export default function DashboardClient() {
     success: i % 2 === 0,
   }));
 
+  const handleOpenProfileSettings = async () => {
+    setShowSettingsModal(true);
+    if (session?.user?.id && supabase) {
+      const code = await generateAndSaveTgCode(session.user.id, supabase);
+      if (code) setTgCode(code);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#160029] to-[#6e1bb3]">
-      <Header onOpenProfileSettings={() => setShowSettingsModal(true)} />
+      <Header onOpenProfileSettings={handleOpenProfileSettings} />
       <main className="flex-grow px-4 py-10 text-white max-w-5xl w-full mx-auto">
 
         <div className="mb-10 bg-white/5 p-6 rounded-2xl shadow-lg backdrop-blur-xl flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -582,41 +575,23 @@ export default function DashboardClient() {
   );
 }
 
-// Вне компонента DashboardClient, до export default function:
-function generateCode() {
-  // Генерирует случайный 6-значный код (один раз при рендере)
-  if (typeof window !== "undefined") {
-    if (!window.__tg_code) {
-      window.__tg_code = Math.floor(100000 + Math.random() * 900000).toString();
-    }
-    return window.__tg_code;
-  }
-  return "------";
-}
 
-// Функция генерации кода с временем жизни 5 минут
-function generateCodeWithExpiry(forceNew = false) {
-  if (typeof window !== "undefined") {
-    const now = Date.now();
-    let data = window.__tg_code_data;
-    if (
-      !data ||
-      !data.code ||
-      !data.expiresAt ||
-      now > data.expiresAt ||
-      forceNew
-    ) {
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = now + 5 * 60 * 1000; // 5 минут
-      data = { code, expiresAt };
-      window.__tg_code_data = data;
-    }
-    return {
-      code: data.code,
-      expired: now > data.expiresAt,
-    };
+
+
+async function generateAndSaveTgCode(userId, supabase) {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 минут
+
+  const { error } = await supabase
+    .from('users')
+    .update({ tg_code: code, tg_code_expires: expires })
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Ошибка сохранения кода Telegram:', error);
+    return null;
   }
-  return { code: "------", expired: false };
+  return code;
 }
 
 function ResetPasswordInline({ email }) {
